@@ -1,0 +1,32 @@
+---
+library:
+ name: National Library
+ street: 1st avenue
+ street number: 110
+ sections:
+  - name: children
+    sections argument: 
+     - stories
+     - comics
+    books:
+     - name: 'Mickey Mouse: The Mysterious Crystal Ball'
+       author: Carl Fallberg
+       publication date: 2010-10-25
+       # binary content not valid, base64 string for demo only
+       cover image: !!binary |
+        w7/DmMO/w6EudEV4aWYAAE1NACoAAAAIAAwBAAADAAAAAQPDqAAAAQEAAwAAAAEFw5wAAAECAAMAAAADAAAAwp4BBgADAAAAAQ== 
+       excerpt: |
+        When Mickey goes to a carnival, he meets a strange fortune teller who seems to know a lot about the future. 
+        In reality, he's in league with criminals and trying to get Mickey to mislead the cops away from crime scenes. 
+        
+        One step ahead of Mickey is famous detective Shamrock Bones.
+     - name: Diary Of A Wimpy Kid (Book 1)
+       author: Jeff Kinney
+       publication date: 2008-07-03
+       # binary content not valid, base64 string for demo only
+       cover image: !!binary |
+        w7/DmMO/w6EudEV4aWYAAE1NACoAAAAIAAwBAAADAAAAAQPDqAAAAQEAAwAAAAEFw5wAAAECAAMAAAADAAAAwp4BBgADAAAAAQ==
+       excerpt: >
+         The first in Jeff Kinney's side-splitting series, join Greg Heffley as he's thrust into a new year, and a new school, 
+         where undersize weaklings share the corridors with kids who are taller, 
+         meaner and already shaving
