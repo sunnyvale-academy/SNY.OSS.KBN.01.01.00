@@ -76,4 +76,3 @@ $ minikube service hello-minikube
 |-----------|----------------|-----------------------------|
 🎉  Opening kubernetes service  default/hello-minikube in default browser...
 ```
-
