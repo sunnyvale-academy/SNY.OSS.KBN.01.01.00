@@ -5,6 +5,9 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
 deb http://apt.kubernetes.io/ kubernetes-xenial main
 EOF
+
+echo "KUBELET_EXTRA_ARGS=--cgroup-driver=systemd" > /etc/default/kubelet
+
 apt-get update
 apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni
 systemctl enable kubelet && systemctl start kubelet
@@ -22,6 +25,7 @@ mkdir -p /etc/systemd/system/docker.service.d
 sudo chmod 777 /var/run/docker.sock
 
 # Restart docker.
+sudo systemctl restart docker 
 sudo systemctl daemon-reload
 sudo systemctl enable docker && sudo systemctl start docker
 
