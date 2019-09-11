@@ -28,3 +28,61 @@ master   Ready    master   18h   v1.15.3
 node1    Ready    <none>   17h   v1.15.3
 node2    Ready    <none>   17h   v1.15.3
 ```
+
+Install the Kubernetes Dashboard
+
+```
+vagrantbh$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta4/aio/deploy/recommended.yaml
+```
+
+Create the service account
+```
+vagrant$ kubectl create serviceaccount dashboard-admin-sa
+```
+
+```
+vagrant$ kubectl create clusterrolebinding dashboard-admin-sa \
+--clusterrole=cluster-admin --serviceaccount=default:dashboard-admin-sa
+```
+
+Download kuberang [here](https://github.com/apprenda/kuberang/releases) and test the cluster
+
+```
+vagrant$ ./kuberang
+
+Kubectl configured on this node                                                 [OK]
+Delete existing deployments if they exist                                       [OK]
+Nginx service does not already exist                                            [OK]
+BusyBox service does not already exist                                          [OK]
+Nginx service does not already exist                                            [OK]
+Issued BusyBox start request                                                    [OK]
+Issued Nginx start request                                                      [OK]
+Issued expose Nginx service request                                             [OK]
+Both deployments completed successfully within timeout                          [OK]
+Grab nginx pod ip addresses                                                     [OK]
+Grab nginx service ip address                                                   [OK]
+Grab BusyBox pod name                                                           [OK]
+Accessed Nginx service at 10.97.93.142 from BusyBox                             [OK]
+Accessed Nginx service via DNS kuberang-nginx-1568230142752374000 from BusyBox  [OK]
+Accessed Nginx pod at 10.244.1.5 from BusyBox                                   [OK]
+Accessed Nginx pod at 10.244.1.4 from BusyBox                                   [OK]
+Accessed Nginx pod at 10.244.1.2 from BusyBox                                   [OK]
+Accessed Google.com from BusyBox                                                [OK]
+Accessed Nginx pod at 10.244.1.5 from this node                                 [ERROR IGNORED]
+Accessed Nginx pod at 10.244.1.4 from this node                                 [ERROR IGNORED]
+Accessed Nginx pod at 10.244.1.2 from this node                                 [ERROR IGNORED]
+Accessed Google.com from this node                                              [OK]
+Powered down Nginx service                                                      [OK]
+Powered down Busybox deployment                                                 [OK]
+Powered down Nginx deployment                                                   [OK]
+```
+
+
+
+You need to proxy your requests to access the Dashboard
+
+```
+vagrant$ kubectl proxy
+```
+
+Point your browser [here](http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/.)
