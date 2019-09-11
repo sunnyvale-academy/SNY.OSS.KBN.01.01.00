@@ -29,23 +29,7 @@ node1    Ready    <none>   17h   v1.15.3
 node2    Ready    <none>   17h   v1.15.3
 ```
 
-Install the Kubernetes Dashboard
-
-```
-vagrantbh$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta4/aio/deploy/recommended.yaml
-```
-
-Create the service account
-```
-vagrant$ kubectl create serviceaccount dashboard-admin-sa
-```
-
-```
-vagrant$ kubectl create clusterrolebinding dashboard-admin-sa \
---clusterrole=cluster-admin --serviceaccount=default:dashboard-admin-sa
-```
-
-Download kuberang [here](https://github.com/apprenda/kuberang/releases) and test the cluster
+Download kuberang utility [here](https://github.com/apprenda/kuberang/releases) and test the cluster
 
 ```
 vagrant$ ./kuberang
@@ -76,7 +60,6 @@ Powered down Nginx service                                                      
 Powered down Busybox deployment                                                 [OK]
 Powered down Nginx deployment                                                   [OK]
 ```
-
 
 
 You need to proxy your requests to access the Dashboard
