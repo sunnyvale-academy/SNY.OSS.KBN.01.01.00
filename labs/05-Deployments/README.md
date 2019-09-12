@@ -128,6 +128,24 @@ nginx-deployment-5754944d6c-rjv8h   1/1     Running   0          19s
 nginx-deployment-5754944d6c-rzn2j   1/1     Running   0          19s
 ```
 
+
+Let's verify how pods have been balanced between nodes
+
+```
+$ kubectl get pods -o wide
+NAME                                READY   STATUS    RESTARTS   AGE   IP            NODE    NOMINATED NODE   READINESS GATES
+nginx-deployment-5754944d6c-298qd   1/1     Running   0          12s   10.244.1.15   node1   <none>           <none>
+nginx-deployment-5754944d6c-4tv4w   1/1     Running   0          7s    10.244.1.18   node1   <none>           <none>
+nginx-deployment-5754944d6c-86tnb   1/1     Running   0          7s    10.244.1.19   node1   <none>           <none>
+nginx-deployment-5754944d6c-czzq5   1/1     Running   0          12s   10.244.2.13   node2   <none>           <none>
+nginx-deployment-5754944d6c-gjv4j   1/1     Running   0          7s    10.244.2.17   node2   <none>           <none>
+nginx-deployment-5754944d6c-hbqbt   1/1     Running   0          7s    10.244.1.17   node1   <none>           <none>
+nginx-deployment-5754944d6c-hrzct   1/1     Running   0          7s    10.244.2.16   node2   <none>           <none>
+nginx-deployment-5754944d6c-k9cdl   1/1     Running   0          7s    10.244.1.16   node1   <none>           <none>
+nginx-deployment-5754944d6c-wm5dk   1/1     Running   0          7s    10.244.2.15   node2   <none>           <none>
+nginx-deployment-5754944d6c-xkqjg   1/1     Running   0          7s    10.244.2.14   node2   <none>           <none>
+```
+
 Finally, to clean up, we remove the deployment and with it the replica sets and pods it supervises:
 
 ```
