@@ -72,7 +72,7 @@ $ kubectl get rs
 NAME                          DESIRED   CURRENT   READY   AGE
 nginx-deployment-5754944d6c   0         0         0       17m
 nginx-deployment-698c64b949   2         2         2       7m23s
-```
+```
 
 Note that during the deployment you can check the progress using **kubectl rollout status deploy/nginx-deployment**
 
@@ -112,6 +112,8 @@ What if we want to manually scale this deployment with replica = 10?
 $ kubectl scale --replicas=10 deployment/nginx-deployment
 deployment.extensions/nginx-deployment scaled
 ```
+
+Verify the pods scaling
 
 ```
 $ kubectl get pods
