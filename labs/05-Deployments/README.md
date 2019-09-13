@@ -41,7 +41,7 @@ deployment.apps/nginx-deployment configured
 
 If you type get pods, you may see the old deployment instances still running while the new deployment is creating the container
 ```
-$ kubectl 
+$ kubectl get pods
 NAME                                READY   STATUS              RESTARTS   AGE
 nginx-deployment-5754944d6c-g46jw   1/1     Running             0          10m
 nginx-deployment-698c64b949-6pbgq   1/1     Running             0          11s
