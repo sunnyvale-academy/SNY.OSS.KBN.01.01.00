@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook-rs
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 2
+  selector:
+    matchExpressions:
+      - {key: app, operator: In, values: [guestbook, guest-book, guest_book]}
+      - {key: env, operator: NotIn, values: [production]}
+  template:
+    metadata:
+      labels:
+        app: guestbook
+        env: dev
+    spec:
+      containers:
+      - name: php-redis
+        image: gcr.io/google_samples/gb-frontend:v3
