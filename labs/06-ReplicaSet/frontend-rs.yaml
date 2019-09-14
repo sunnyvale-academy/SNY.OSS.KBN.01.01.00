@@ -8,6 +8,9 @@ metadata:
 spec:
   # modify replicas according to your case
   replicas: 2
+  # In this case, it’s more or less the same as when we were 
+  # creating the ReplicationController, except we’re using 
+  # matchExpressions instead of label.
   selector:
     matchExpressions:
       - {key: app, operator: In, values: [guestbook, guest-book, guest_book]}

@@ -60,3 +60,10 @@ Events:
   Normal  SuccessfulCreate  3s    replicaset-controller  Created pod: frontend-r72q9
   ```
 
+```
+$ kubectl get pods
+NAME             READY   STATUS    RESTARTS   AGE
+frontend-r72q9   1/1     Running   0          8m41s
+frontend-zdpgw   1/1     Running   0          8m41s
+```
+
