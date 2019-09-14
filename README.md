@@ -14,7 +14,11 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [04-Pod](labs/04-Pod/README.md)
 
-[05-Deployment](labs/05-Deployment/README.md)
+[05-ReplicationController](labs/05-ReplicationController/README.md)
+
+[06-ReplicaSet](labs/06-ReplicaSet/README.md)
+
+[07-Deployment](labs/07-Deployment/README.md)
 
 ## Appendices
 
