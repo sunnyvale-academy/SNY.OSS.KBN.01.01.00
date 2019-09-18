@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodeport-service
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      # The port on each cluster node this service is exposed.
+      # Usually assigned by the system. If specified, it will be allocated to the service.
+      # NodePort range from 30000 to 32767
+      nodePort: 30100
+      # The port that will be exposed by this service.
+      port: 8080
+      # Number or name of the port to access on the pods targeted by the service
+      targetPort: 80
+  selector:
+    app: nginx
