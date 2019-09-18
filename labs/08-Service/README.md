@@ -10,7 +10,7 @@ Kubernetes Pods are mortal. They are born and when they die, they are not resurr
 Each Pod gets its own IP address, however in a Deployment, the set of Pods running in one moment in time could be different from the set of Pods running that application a moment later.
 This leads to a problem: if some set of Pods (call them “backends”) provides functionality to other Pods (call them “frontends”) inside your cluster, how do the frontends find out and keep track of which IP address to connect to, so that the frontend can use the backend part of the workload?
 
-Services solve this problem mapping requests to Pod using selectrs.
+Services solve this problem mapping requests to Pod using selectors.
 
 ![Service routing](img/service-route.gif)
 
@@ -41,7 +41,7 @@ nginx-deployment   2/2     2            2           38s   nginx        nginx:lat
 
 If you see 2/2 it means everything worked as expected.
 
-Creating a Service means allow the access to that Pods
+Creating a Service means allowing the access to that Pods
 
 ```
 $ kubectl apply -f service_clusterip.yaml
@@ -217,10 +217,25 @@ Commercial support is available at
 </html>
 ```
 
-If you point to the **node1** 30100 port the service still respond, even if the single Pod has been scheduled on **node2**, why? Because with NodePort services a port is opened on every worker node, even if it has no Pod scheduled. The internal Kubernetes software defined network routes the request to the Pod instance, wherever it is.
+If you point to the **node1** 30100 port the service still responds, even if the single Pod has been scheduled on **node2**, why? 
+Because with **NodePort** services, a port is opened on every worker node, even if there's no Pod scheduled on it. The internal Kubernetes SDN routes the request to the Pod instance, wherever it is.
 
-#LoadBalancer
+## LoadBalancer
 
-When the Service type is set to LoadBalancer, Kubernetes provides functionality equivalent to type equals ClusterIP to pods within the cluster and extends it by programming the (external to Kubernetes) load balancer with entries for the Kubernetes pods.
+When the Service type is set to **LoadBalancer**, Kubernetes provides functionality equivalent to type equals ClusterIP to pods within the cluster and extends it by programming the (external to Kubernetes) load balancer with entries for the Kubernetes pods.
 
 LoadBalancer service type works only if you run Kubernetes on a cloud provider that support the creation of load balancers with public IP address, so this scenario can not be tested on a local Kubenrtes installation.
+
+
+Before ending up, delete everything we created during this lab
+
+```
+$ kubectl delete service clusterip-service
+service "clusterip-service" deleted
+
+$ kubectl delete service nodeport-service
+service "nodeport-service" deleted
+
+$ kubectl delete deployment nginx-deployment
+deployment.extensions "nginx-deployment" deleted
+```
