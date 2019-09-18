@@ -24,6 +24,8 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [09-Ingress](labs/09-Ingress/README.md)
 
+[10-Volume](labs/10-Volume/README.md)
+
 ## Appendices
 
 [A-Sync copy of forked repo](appendices/A-Sync_copy_of_forked_repo/README.md)
