@@ -5,10 +5,11 @@ metadata:
   labels:
     storage-type: nfs
 spec:
+#  storageClassName: generic
   capacity:
     storage: 5Gi 
   accessModes:
-  - ReadWriteOnce 
+  - ReadWriteMany 
   nfs: 
     path: /shared 
     server: 192.168.26.10

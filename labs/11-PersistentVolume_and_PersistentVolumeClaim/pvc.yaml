@@ -3,12 +3,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: nfs-pvc  
 spec:
+ # storageClassName: generic
   accessModes:
   - ReadWriteMany      
   resources:
      requests:
        storage: 1Gi 
  # The selector field defines all labels necessary in a PV in order to match this claim
-  selector: 
-    matchLabels:
-      storage-type: nfs
+ # selector: 
+ #   matchLabels:
+ #     storage-type: nfs

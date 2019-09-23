@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-nfs-deployment
+  labels:
+    app: busybox
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: busybox
+  template:
+    metadata:
+        labels:
+          app: busybox
+    spec:
+      containers:
+      - name: busybox-nfs-container
+        image: busybox 
+        command: ["/bin/ash", "-ec", "echo \"\" > /usr/share/busybox/index.html && while (true); do echo \"$(hostname) - $(date)<br>\" >> /usr/share/busybox/index.html && sleep 5 ; done"]
+        volumeMounts:
+        - name: nfsvol-2 
+          mountPath: /usr/share/busybox  
+          readOnly: false
+      securityContext:
+      volumes:
+      - name: nfsvol-2
+        persistentVolumeClaim:
+          claimName: nfs-pvc 
