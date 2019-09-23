@@ -79,4 +79,15 @@ If you point your browser [here](http://192.168.26.11:30100) and keep refreshing
 
 What is happening here is that the two busybox pods are writing the same file in the same volume. Also, the nginx pod is mounting the same volume to read the file and present it to you.
 
+Don't forget to clean up after you:
+
+```shell
+$ kubectl delete -f .
+deployment.apps "busybox-nfs-deployment" deleted
+persistentvolume "nfsvol" deleted
+pod "nginx-nfs-pod" deleted
+service "nginx-nodeport-service" deleted
+persistentvolumeclaim "nfs-pvc" deleted
+```
+
 
