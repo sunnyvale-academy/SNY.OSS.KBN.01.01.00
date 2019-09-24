@@ -28,7 +28,7 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [11-PersistentVolume and PersistentVolumeClaim](labs/11-PersistentVolume_and_PersistentVolumeClaim/README.md)
 
-[12-StorageClass]labs/12-StorageClass/README.md)
+[12-StorageClass](labs/12-StorageClass/README.md)
 
 ## Appendices
 
