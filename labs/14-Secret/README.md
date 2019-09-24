@@ -121,6 +121,7 @@ You can remove the pods and the secret with:
 
 ```console
 $  kubectl delete pod/pod-secretenv pod/pod-secretvolume secret/apikey 
+pod "pod-secretenv" deleted
 pod "pod-secretvolume" deleted
 secret "apikey" deleted
 ```
