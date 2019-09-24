@@ -51,7 +51,7 @@ $ kubectl apply -f pod-secretvolume.yaml
 pod/pod-secretvolume created
 ```
 
-This pod declaration contains the following snippet, which take a secret by name and inject its value within the container into the Pod.
+This pod declaration contains the following snippet, which takes a secret by name and injects it as a volume within the pod's container.
 
 ```yaml
 ...
