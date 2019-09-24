@@ -34,6 +34,10 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [14-Secret](labs/14-Secret/README.md)
 
+[15-StatefulSet](labs/15-StatefulSet/README.md)
+
+[16-Job](labs/16-Job/README.md)
+
 ## Appendices
 
 [A-Sync copy of forked repo](appendices/A-Sync_copy_of_forked_repo/README.md)
