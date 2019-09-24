@@ -5,21 +5,21 @@ Virtualbox + Vagrant + kubectl have to be installed on the host machine as a pre
 All the istructions here after have to be run on the host machine.
 
 Install vagrant plugins
-```
+```console
 $ vagrant plugin install vagrant-vbguest
 $ vagrant plugin install vagrant-reload
 $ vagrant plugin install vagrant-hostmanager
 ```
 Provision the environent
 
-```
+```console
 $ cd vagrant
 vagrant$ vagrant up
 ```
 
 Test the environment
 
-```
+```console
 vagrant$ export KUBECONFIG=kubeconfig.yaml
 vagrant$ kubectl get nodes
 
@@ -31,7 +31,7 @@ node2    Ready    <none>   17h   v1.15.3
 
 Download kuberang utility [here](https://github.com/apprenda/kuberang/releases) and test the cluster
 
-```
+```console
 vagrant$ ./kuberang
 
 Kubectl configured on this node                                                 [OK]
@@ -64,7 +64,7 @@ Powered down Nginx deployment                                                   
 
 You need to proxy your requests to access the Dashboard
 
-```
+```console
 vagrant$ kubectl proxy
 ```
 

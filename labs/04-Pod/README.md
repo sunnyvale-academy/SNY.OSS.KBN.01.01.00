@@ -2,40 +2,40 @@
 
 Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
 
-```
+```console
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
 ## Single container Pod
 
-```
+```console
 $ kubectl apply -f single-container_pod.yaml
 ```
 
 Get the Pod status
 
-```
+```console
 $ kubectl get pods
 NAME        READY   STATUS    RESTARTS   AGE           
 myapp-pod   1/1     Running   0          16s
 ```
 
 Discover where the Pod has been scheduled
-```
+```console
 $ kubectl get pod myapp-pod -o wide
 NAME        READY   STATUS    RESTARTS   AGE     IP           NODE    NOMINATED NODE   READINESS GATES
 myapp-pod   1/1     Running   0          3m30s   10.244.2.4   node2   <none>           <none>
 ```
 
 Get the Pod's container logs
-```
+```console
 $ kubectl logs myapp-pod 
 Hello Kubernetes!
 ```
 
 Cleanup!
 
-```
+```console
 $ kubectl delete -f single-container_pod.yaml
 pod "myapp-pod" deleted
 ```
@@ -45,13 +45,13 @@ pod "myapp-pod" deleted
 ## Two containers Pod
 
 Create the Pod
-```
+```console
 $ kubectl apply -f two-containers_pod.yaml
 pod/mc1 created
 ```
 
 Try to get the Pod status
-```
+```console
 $ kubectl get pods
 NAME   READY   STATUS              RESTARTS   AGE
 mc1    0/2     ContainerCreating   0          114s
@@ -59,7 +59,7 @@ mc1    0/2     ContainerCreating   0          114s
 
 If you repeat the command after a while
 
-```
+```console
 $ kubectl get pods
 NAME   READY   STATUS    RESTARTS   AGE
 mc1    2/2     Running   0          3m30s
@@ -67,7 +67,7 @@ mc1    2/2     Running   0          3m30s
 
 Get the Pod configuration in YAML format
 
-```
+```console
 $ kubectl get pod mc1 -o yaml
 apiVersion: v1
 kind: Pod
@@ -128,7 +128,7 @@ spec:
 
 Cleanup!
 
-```
+```console
 $ kubectl delete -f two-containers_pod.yaml
 pod "mc1" deleted
 ```
@@ -136,7 +136,7 @@ pod "mc1" deleted
 ## Resource constrained Pod
 
 Inspect the YAML file
-```
+```console
 $ cat resources-constrained_pod.yaml
 apiVersion: v1
 kind: Pod
@@ -169,24 +169,24 @@ spec:
 
 Apply the YAML file
 
-```
+```console
 $ kubectl apply -f resources-constrained_pod.yaml
 pod/frontend created
 ```
 
-```
+```console
 $ kubectl get pods
 NAME       READY   STATUS    RESTARTS   AGE
 frontend   2/2     Running   0          44s
 ```
 
-```
+```console
 $ kubectl get pod frontend -o wide
 NAME       READY   STATUS    RESTARTS   AGE   IP           NODE    NOMINATED NODE   READINESS GATES
 frontend   2/2     Running   0          9m    10.244.1.7   node1   <none>           <none>
 ```
 
-```
+```console
 $ kubectl delete -f resources-constrained_pod.yaml
 pod "frontend" deleted
 ```

@@ -12,14 +12,14 @@ A persistent volume (PV) is a cluster-wide resource that you can use to store da
 
 Type the following to create the PV.
 
-```shell
+```console
 $ kubectl create -f nfs-volume.yaml
 persistentvolume/nfsvol
 ```
 
 Let's check to see if it is available
 
-```shell
+```console
 $ kubectl get pv
 NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
 nfsvol   5Gi        RWX            Retain           Available                                   8s                                   52s
@@ -28,14 +28,14 @@ nfsvol   5Gi        RWX            Retain           Available                   
 In order to use a PV you need to claim it first, using a persistent volume claim (PVC). The PVC requests a PV with your desired specification (size, speed, etc.) from Kubernetes and binds it then to a pod where you can mount it as a volume. 
 
 
-```shell
+```console
 $ kubectl create -f pvc.yaml
 persistentvolumeclaim/nfs-pvc created
 ```
 
 Now verify if the PVC is marked as **Bound**
 
-```shell
+```console
 $ kubectl get pvc -o wide
 NAME      STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE   VOLUMEMODE
 nfs-pvc   Bound    nfsvol   5Gi        RWX                           18s   Filesystem
@@ -43,7 +43,7 @@ nfs-pvc   Bound    nfsvol   5Gi        RWX                           18s   Files
 
 The Pod we are going to create is made of an nginx container that mounts the volume to use it as a document root
 
-```shell
+```console
 $ kubectl create -f nginx-pod.yaml
 pod/nginx-nfs-pod created  
 service/nginx-nodeport-service created
@@ -53,7 +53,7 @@ As you can see in the output, nginx-pod.yaml also contains the declaration of a 
 
 After a few minutes, verify that the pod was created:
 
-```shell
+```console
 $ kubectl get pods
 NAME            READY   STATUS    RESTARTS   AGE
 nginx-nfs-pod   1/1     Running   0          2m21s
@@ -61,13 +61,13 @@ nginx-nfs-pod   1/1     Running   0          2m21s
 
 Let's create a couple of pods that are using the same PV
 
-```shell
+```console
 $ kubectl apply -f busybox-deployment.yaml
 deployment.apps/busybox-nfs-deployment created
 ```
 Verify if all the busybox pod replicas have been created correctly, also they should have been scheduled on both nodes.
 
-```shell
+```console
 $ kubectl get pods -o wide
 NAME                                      READY   STATUS    RESTARTS   AGE    IP            NODE    NOMINATED NODE   READINESS GATES
 busybox-nfs-deployment-649f7cd75d-cmmt6   1/1     Running   0          4m9s   10.244.1.7    node1   <none>           <none>
@@ -81,7 +81,7 @@ What is happening here is that the two busybox pods are writing the same file in
 
 Don't forget to clean up after you:
 
-```shell
+```console
 $ kubectl delete -f .
 deployment.apps "busybox-nfs-deployment" deleted
 persistentvolume "nfsvol" deleted

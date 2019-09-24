@@ -2,7 +2,7 @@
 
 Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
 
-```
+```console
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
@@ -14,14 +14,14 @@ If there are too many pods, the ReplicationController terminates the extra pods.
 
 Create the RC
 
-```
+```console
 $ kubectl create -f nginx-rc.yaml
 replicationcontroller/nginx created
 ```
 
 Get informations about the RC
 
-```
+```console
 $ kubectl get rc                                                       
 NAME    DESIRED   CURRENT   READY   AGE
 nginx   2         2         0       69s
@@ -29,7 +29,7 @@ nginx   2         2         0       69s
 
 Describe the RC
 
-```
+```yaml
 $ kubectl describe rc/nginx
 Name:         nginx
 Namespace:    default
@@ -56,7 +56,7 @@ Events:
 ```
 
 Get the Pods
-```
+```console
 $ kubectl get pods                                                     
 NAME          READY   STATUS    RESTARTS   AGE
 nginx-c7nw7   1/1     Running   0          8s
@@ -64,14 +64,14 @@ nginx-j7swj   1/1     Running   0          8s
 ```
 
 Now try to delete a Pod, you will see the RC that suddenly recreate another instance of the same Pod template.
-```
+```console
 kubectl delete pod nginx-c7nw7                                         
 pod "nginx-c7nw7" deleted
 ```
 
 RC successfully ensured the derired number of Pods (2)
 
-```
+```console
 kubectl get pods                                                      
 NAME          READY   STATUS    RESTARTS   AGE
 nginx-j7swj   1/1     Running   0          80s
@@ -81,14 +81,14 @@ nginx-t54sl   1/1     Running   0          16s
 
 Finally, delete the RC
 
-```
+```console
 $ kubectl delete -f nginx-rc.yaml
 replicationcontroller "nginx" deleted
 ```
 
 As you can see, when you delete the Replication Controller, you also delete all of the pods that it created.
 
-```
+```console
 $ kubectl get pods                                                     
 No resources found.
 ```

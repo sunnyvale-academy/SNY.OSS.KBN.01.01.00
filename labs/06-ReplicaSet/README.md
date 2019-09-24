@@ -2,7 +2,7 @@
 
 Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
 
-```
+```console
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
@@ -12,7 +12,7 @@ ReplicaSet then fulfills its purpose by creating and deleting Pods as needed to 
 
 In this case, it’s more or less the same as when we were creating the ReplicationController, except we’re using matchExpressions instead of label. 
 
-```
+```yaml
 ...
 spec:
    replicas: 2
@@ -25,14 +25,14 @@ spec:
 
 Now create the RS
 
-```
+```console
 $ kubectl create -f frontend-rs.yaml
 replicaset.apps/frontend created
 ```
 
 Describe the RS
 
-```
+```yaml
 kubectl describe replicaset.apps/frontend                                                                                                   
 Name:         frontend
 Namespace:    default
@@ -60,7 +60,7 @@ Events:
   Normal  SuccessfulCreate  3s    replicaset-controller  Created pod: frontend-r72q9
   ```
 
-```
+```console
 $ kubectl get pods
 NAME             READY   STATUS    RESTARTS   AGE
 frontend-r72q9   1/1     Running   0          8m41s

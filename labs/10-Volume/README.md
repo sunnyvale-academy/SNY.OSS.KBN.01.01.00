@@ -2,7 +2,7 @@
 
 Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
 
-```
+```console
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
@@ -18,14 +18,14 @@ A special type of volume is PersistentVolume, which we will cover elsewhere.
 
 Let’s create a pod with two containers that use an emptyDir volume to exchange data:
 
-```
+```console
 $ kubectl create -f pod.yaml
 pod/sharevol created
 ```
 
 Let's see the Pod description for the volume
 
-```
+```console
 $ kubectl describe pod sharevol
 Name:                   sharevol
 Namespace:              default
@@ -38,7 +38,7 @@ Volumes:
 
 We first exec into one of the containers in the pod, c1, check the volume mount and generate some data:
 
-```
+```console
 $ kubectl exec -it sharevol -c c1 -- bash
 
 [root@sharevol /]# mount | grep xchange
@@ -48,7 +48,7 @@ $ kubectl exec -it sharevol -c c1 -- bash
 
 When we now exec into c2, the second container running in the pod, we can see the volume mounted at /tmp/data and are able to read the data created in the previous step:
 
-```
+```console
 $ kubectl exec -it sharevol -c c2 -- bash
 [root@sharevol /]# mount | grep /tmp/data
 /dev/sda1 on /tmp/data type ext4 (rw,relatime,data=ordered)
@@ -60,7 +60,7 @@ Note that in each container you need to decide where to mount the volume and tha
 
 You can remove the pod with:
 
-```
+```console
 $ kubectl delete pod/sharevol
 ```
 

@@ -2,7 +2,7 @@
 
 Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
 
-```
+```console
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
@@ -26,14 +26,14 @@ There are three types of services:
 
 To try this demo, let's create a Deployment to spawn 2 nginx Pod (replicas=2).
 
-```
+```console
 $ kubectl apply -f  nginx_latest-deployment.yaml 
 deployment.apps/nginx-deployment created
 ```
 
 To check if the Pods are running, after a few minutes type:
 
-```
+```console
 $ kubectl get deployments -o wide 
 NAME               READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES         SELECTOR
 nginx-deployment   2/2     2            2           38s   nginx        nginx:latest   app=nginx
@@ -43,14 +43,14 @@ If you see 2/2 it means everything worked as expected.
 
 Creating a Service means allowing the access to that Pods
 
-```
+```console
 $ kubectl apply -f service_clusterip.yaml
 service/clusterip-service created
 ```
 
 Let's inspect our first service (the service you create on your cluster may differ slightly)
 
-```
+```console
 $ kubectl get services -o wide 
 NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE     SELECTOR
 clusterip-service   ClusterIP   10.96.225.222   <none>        8080/TCP   30s     app=nginx
@@ -60,7 +60,7 @@ This means that your Pods are accessible ONLY within the cluster with IP address
 
 To verify it, we spawn a busybox Pod in order to contact the service's IP address from within the Kubernetes cluster.
 
-```
+```console
 $ kubectl run -i --rm --tty busybox --image=busybox --restart=Never -- wget -qO- 10.96.225.222:8080 
 <!DOCTYPE html>
 <html>
@@ -96,20 +96,20 @@ What if you want to expose your Pods to the outside world? NodePort service type
 
 ## NodePort
 
-```
+```console
 $ kubectl apply -f service_nodeport.yaml
 service/clusterip-service configured
 ```
 
 Your service has been created 
 
-```
+```console
 $ kubectl get services 
 clusterip-service   ClusterIP   10.110.67.72    <none>        8080/TCP         16s     app=nginx
 nodeport-service    NodePort    10.107.54.251   <none>        8080:30100/TCP   8s      app=nginx
 ```
 
-```
+```console
 $ kubectl describe service nodeport-service 
 Name:                     nodeport-service
 Namespace:                default
@@ -130,7 +130,7 @@ Events:                   <none>
 
 The following command is meant to try access the service by pointing to a worker's ip address and port 30100. You can just copy & paste IP:PORT in your browser to achieve the same.
 
-```
+```console
 $ curl 192.168.26.11:30100
 <!DOCTYPE html>
 <html>
@@ -163,14 +163,14 @@ Of course if you point to the other worker the result is the same (since Pod rep
 
 Now, let's try to scale down nginx deployment to 1 replica:
 
-```
+```console
 $ kubectl scale --replicas=1 deployment/nginx-deployment
 deployment.extensions/nginx-deployment scaled
 ```
 
 Now the single Pod instance is scheduled on **node2**
 
-```
+```console
 $ kubectl get pods -o wide  
 NAME                                READY   STATUS    RESTARTS   AGE   IP            NODE    NOMINATED NODE   READINESS GATES
 nginx-deployment-68c7f5464c-lqdsb   1/1     Running   0          68m   10.244.2.25   node2   <none>           <none>
@@ -178,7 +178,7 @@ nginx-deployment-68c7f5464c-lqdsb   1/1     Running   0          68m   10.244.2.
 
 Let's find all the node ip addresses
 
-```
+```console
 $ kubectl get nodes -o wide 
 NAME     STATUS   ROLES    AGE     VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
 master   Ready    master   7d      v1.15.3   192.168.26.10   <none>        Ubuntu 16.04.6 LTS   4.4.0-146-generic   docker://18.9.7
@@ -188,7 +188,7 @@ node2    Ready    <none>   6d23h   v1.15.3   192.168.26.12   <none>        Ubunt
 
 What if we try to access the port 30100 poiting to the node where the Pod IS NOT scheduled?
 
-```
+```console
 $ curl 192.168.26.11:30100
 <!DOCTYPE html>
 <html>
@@ -229,7 +229,7 @@ LoadBalancer service type works only if you run Kubernetes on a cloud provider t
 
 Before ending up, delete everything we created during this lab
 
-```
+```console
 $ kubectl delete service clusterip-service
 service "clusterip-service" deleted
 

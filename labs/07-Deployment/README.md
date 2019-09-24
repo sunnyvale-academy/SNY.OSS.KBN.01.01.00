@@ -2,7 +2,7 @@
 
 Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
 
-```
+```console
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
@@ -12,14 +12,14 @@ A deployment is a supervisor for pods, giving you fine-grained control over how 
 
 Let’s create a deployment with a single container based on nginx:1.7.9 image, that supervises two replicas of a pod as well as a replica set:
 
-```
+```console
 $ kubectl apply -f nginx1.7.9-deployment.yaml
 deployment.apps/nginx-deployment created
 ```
 
 You can have a look at the deployment, as well as the the replica set and the pods the deployment looks after like so:
 
-```
+```console
 $ kubectl get deployments 
 NAME               READY   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   2/2     3            3           49s
@@ -36,13 +36,13 @@ nginx-deployment-5754944d6c-g46jw   1/1     Running   0          3m54s
 
 Let's update the deployment with a container based on nginx:latest image.
 
-```
+```console
 $ kubectl apply -f nginx_latest-deployment.yaml
 deployment.apps/nginx-deployment configured
 ```
 
 If you type get pods, you may see the old deployment instances still running while the new deployment is creating the container
-```
+```console
 $ kubectl get pods
 NAME                                READY   STATUS              RESTARTS   AGE
 nginx-deployment-5754944d6c-g46jw   1/1     Running             0          10m
@@ -51,7 +51,7 @@ nginx-deployment-698c64b949-vl29q   0/1     ContainerCreating   0          10s
 ```
 
 After a while, old pod instances are terminating, the new onces are already running
-```
+```console
 $ kubectl get pods
 NAME                                READY   STATUS        RESTARTS   AGE
 nginx-deployment-5754944d6c-g46jw   0/1     Terminating   0          11m
@@ -60,7 +60,7 @@ nginx-deployment-698c64b949-vl29q   1/1     Running       0          44s
 ```
 
 At the end, pod instances stay running, the old ones are not deployed anymore
-```
+```console
 $ kubectl get pods
 NAME                                READY   STATUS    RESTARTS   AGE
 nginx-deployment-698c64b949-6pbgq   1/1     Running   0          72s
@@ -69,7 +69,7 @@ nginx-deployment-698c64b949-vl29q   1/1     Running   0          71s
 
 Also, a new replica set has been created by the deployment:
 
-```
+```console
 $ kubectl get rs
 NAME                          DESIRED   CURRENT   READY   AGE
 nginx-deployment-5754944d6c   0         0         0       17m
@@ -78,14 +78,14 @@ nginx-deployment-698c64b949   2         2         2       7m23s
 
 Note that during the deployment you can check the progress using **kubectl rollout status deploy/nginx-deployment**
 
-```
+```console
 $ kubectl rollout status deploy/nginx-deployment
 deployment "nginx-deployment" successfully rolled out
 ```
 
 A history of all deployments is available via:
 
-```
+```console
 $ kubectl rollout history deploy/nginx-deployment
 deployment.extensions/nginx-deployment 
 REVISION  CHANGE-CAUSE
@@ -95,7 +95,7 @@ REVISION  CHANGE-CAUSE
 
 If there are problems in the deployment Kubernetes will automatically roll back to the previous version, however you can also explicitly roll back to a specific revision, as in our case to revision 1 (the original pod version):
 
-```
+```console
 $ kubectl rollout undo deploy/nginx-deployment --to-revision=1
 deployment.extensions/nginx-deployment rolled back
 
@@ -110,14 +110,14 @@ At this point in time we’re back at where we started
 
 What if we want to manually scale this deployment with replica = 10?
 
-```
+```console
 $ kubectl scale --replicas=10 deployment/nginx-deployment
 deployment.extensions/nginx-deployment scaled
 ```
 
 Verify the pods scaling
 
-```
+```console
 $ kubectl get pods
 NAME                                READY   STATUS    RESTARTS   AGE
 nginx-deployment-5754944d6c-2hrtr   1/1     Running   0          19s
@@ -135,7 +135,7 @@ nginx-deployment-5754944d6c-rzn2j   1/1     Running   0          19s
 
 Let's verify how pods have been balanced between nodes
 
-```
+```console
 $ kubectl get pods -o wide
 NAME                                READY   STATUS    RESTARTS   AGE   IP            NODE    NOMINATED NODE   READINESS GATES
 nginx-deployment-5754944d6c-298qd   1/1     Running   0          12s   10.244.1.15   node1   <none>           <none>
@@ -152,7 +152,7 @@ nginx-deployment-5754944d6c-xkqjg   1/1     Running   0          7s    10.244.2.
 
 Finally, to clean up, we remove the deployment and with it the replica sets and pods it supervises:
 
-```
+```console
 $ kubectl delete deploy nginx-deployment
 deployment.extensions "nginx-deployment" deleted
 

@@ -2,7 +2,7 @@
 
 Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
 
-```
+```console
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
@@ -12,21 +12,21 @@ We first need to grant some permissions to Traefik to access Pods, Endpoints, an
 
 Let's start from ServiceAccount
 
-```
+```console
 $ kubectl create -f traefik-service-acc.yaml
 serviceaccount/traefik-ingress created
 ```
 
 Next, let’s create a ClusterRole with a set of permissions which will be applied to the Traefik ServiceAccount. The ClusterRole will allow Traefik to manage and watch such resources as Services, Endpoints, Secrets, and Ingresses across all namespaces in your cluster.
 
-```
+```console
 $ kubectl create -f traefik-cr.yaml
 clusterrole.rbac.authorization.k8s.io/traefik-ingress created
 ```
 
 Finally, to enable these permissions, we should bind the ClusterRole to the Traefik ServiceAccount. This can be done using the ClusterRoleBinding resource:
 
-```
+```console
 $ kubectl create -f traefik-crb.yaml 
 clusterrolebinding.rbac.authorization.k8s.io/traefik-ingress created
 ```
@@ -36,28 +36,28 @@ clusterrolebinding.rbac.authorization.k8s.io/traefik-ingress created
 
 First we create a **Deployment** based on nginx Docker image
 
-```
+```console
 $ kubectl apply -f nginx-deployment.yaml 
 deployment.apps/nginx-deployment created
 ```
 
 And we expose with a **ClusterIP** service the nginx Pod
 
-```
+```console
 $ kubectl apply -f nginx-svc.yaml        
 service/nginx-service created  
 ```
 
 Then we create a **Deployment** based on containous/whoami Docker image
 
-```
+```console
 $ kubectl apply -f whoami-deployment.yaml 
 deployment.apps/whoami-deployment created
 ```
 
 And we expose with a **ClusterIP** service the containous/whoami Pod as well
 
-```
+```console
 $ kubectl apply -f whoami-svc.yaml        
 service/whoami-service created  
 ```
@@ -70,14 +70,14 @@ In this tutorial, we’ll be using the Deployment manifest. Deployments have a n
 
 This Deployment will create one Traefik replica in the default namespace. The Traefik container will be using ports 80 exposed with a NodePort Service.
 
-```
+```console
 $ kubectl create -f traefik-deployment.yaml 
 deployment.extensions "traefik-ingress" created
 ```
 
 Now, let’s check to see if the Traefik Pods were successfully created:
 
-```
+```console
 $ kubectl get pods
 ...
 traefik-ingress-7468c9c598-57m6c   1/1     Running   0          8s
@@ -89,12 +89,12 @@ As you can see, the Deployment Controller launched one Traefik Pod replica, and 
 
 ## Create NodePorts for External Access
 
-```
+```console
 $ kubectl create -f traefik-svc.yaml 
 service/traefik-ingress-service created
 ```
 
-```
+```console
 $ kubectl describe svc traefik-ingress-service
 Name:                     traefik-ingress-service
 Namespace:                default
@@ -120,14 +120,14 @@ As you see, now we have one NodePort (“web”) that route to the 80 container 
 
 Now we have Traefik as the Ingress Controller in the Kubernetes cluster. However, we still need to define the Ingress resource
 
-```
+```console
 $ kubectl create -f traefik-ingress.yaml
 ingress.extensions/traefik-web-ui created
 ```
 Based on the routing defined into the `traefik-ingress.yaml`file, we should get this output (you can use your browser too)
 Be aware that you have to use the NodePort showed by the `kubectl describe svc traefik-ingress-service` command.
 
-```
+```console
 $ curl -H "Host: 192-168-26-11.nip.io" http://192-168-26-11.nip.io:30592/whoami 
 Hostname: whoami-deployment-547545f65d-zjbgf
 IP: 127.0.0.1
@@ -148,7 +148,7 @@ X-Real-Ip: 10.244.1.1
 
 This was the whoami home page.
 
-```
+```console
 $ curl -H "Host: 192-168-26-11.nip.io" http://192-168-26-11.nip.io:30592/                                                                      
 <!DOCTYPE html>
 <html>
@@ -183,7 +183,7 @@ To discover how the ingress routing works, please refer to the `traefik-ingress.
 
 As expected, if you point to the other node, the command doesn't work.
 
-```
+```console
 $ curl -H "Host: 192-168-26-12.nip.io" http://192-168-26-12.nip.io:30592/whoami
 404 page not found
 ```
@@ -192,7 +192,7 @@ Can you guess why?
 
 Finally, clen up resources:
 
-```
+```console
 $ kubectl delete -f .
 deployment.apps "nginx-deployment" deleted
 service "nginx-service" deleted
