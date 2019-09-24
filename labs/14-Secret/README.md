@@ -51,10 +51,32 @@ $ kubectl apply -f pod-secretvolume.yaml
 pod/pod-secretvolume created
 ```
 
+This pod declaration contains the following snippet, which take a secret by name and inject its value within the container into the Pod.
+
+```yaml
+...
+  containers:
+  - name: shell
+    image: centos:7
+    command:
+      - "bin/bash"
+      - "-c"
+      - "sleep 10000"
+    volumeMounts:
+      - name: apikeyvol
+        mountPath: "/tmp/apikey"
+        readOnly: true
+  volumes:
+  - name: apikeyvol
+    secret:
+      secretName: apikey
+...
+```
+
 If we now exec into the container we see the secret mounted at /tmp/apikey:
 
 ```console
-$  kubectl exec -it pod-secretvolume -c shell -- bash
+$ kubectl exec -it pod-secretvolume -c shell -- bash
 [root@pod-secretvolume /]# mount | grep apikey
 tmpfs on /tmp/apikey type tmpfs (ro,relatime)
 [root@pod-secretvolume /]# cat /tmp/apikey/apikey.txt
@@ -62,11 +84,43 @@ A19fh68B001j
 [root@pod-secretvolume /]# exit
 ```
 
-
-You can remove both the pod and the secret with:
+The next example shows how to inject a secret as a container environment variable.
 
 ```console
-$  kubectl delete pod/pod-secretvolume secret/apikey
+$ kubectl apply -f pod-secretenv.yaml 
+pod/pod-secretenv created
+```
+
+This pod declaration contains the following snippet, which take a secret by name and inject its value within the container into the Pod.
+
+```yaml
+...
+  containers:
+  - name: shell
+    image: centos:7
+    env:
+      - name: SECRET_APIKEY
+        valueFrom:
+          secretKeyRef:
+            name: apikey
+            key: apikey.txt
+...
+```
+
+Now if we now exec into the container you can see your secret injected as an environment variable:
+
+```console
+$ kubectl exec -it pod-secretenv -c shell -- bash
+[root@pod-secretvolume /]# env | grep APIKEY
+SECRET_APIKEY=A19fh68B001j
+[root@pod-secretvolume /]# exit
+```
+
+
+You can remove the pods and the secret with:
+
+```console
+$  kubectl delete pod/pod-secretenv pod/pod-secretvolume secret/apikey 
 pod "pod-secretvolume" deleted
 secret "apikey" deleted
 ```
