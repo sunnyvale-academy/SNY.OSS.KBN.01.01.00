@@ -60,7 +60,7 @@ If its status remains **Pending** probably it can't be scheduled on the master n
 
 Create ClusterRole, ClusterRoleBinding, Role and RoleBinding (this is necessary if you use RBAC authorization on your cluster, which is the default for newer kubernetes versions).
 
-```
+```console
 $ kubectl create -f rbac.yaml
 clusterrole.rbac.authorization.k8s.io/nfs-provisioner-runner created
 clusterrolebinding.rbac.authorization.k8s.io/run-nfs-provisioner created
