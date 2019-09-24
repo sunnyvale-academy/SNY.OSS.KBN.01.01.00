@@ -30,6 +30,10 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [12-StorageClass](labs/12-StorageClass/README.md)
 
+[13-ConfigMap](labs/13-ConfigMap/README.md)
+
+[14-Secret](labs/14-Secret/README.md)
+
 ## Appendices
 
 [A-Sync copy of forked repo](appendices/A-Sync_copy_of_forked_repo/README.md)
