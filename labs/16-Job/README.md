@@ -89,3 +89,38 @@ $ kubectl delete jobs/countdown
 job.batch "countdown" deleted
 ```
 
+Let's try to schedule a CronJob. CronJobs are useful to start a  computation or activity on pre-defined interval.
+
+To try a CronJob resource apply the **cron-job.yaml** config.
+
+```console
+$ kubectl apply -f cron-job.yaml
+cronjob.batch/hello created
+```
+
+To inspect the CronJob schedule:
+
+```console
+$ kubectl get cronjob hello
+NAME    SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+hello   */1 * * * *   False     0        <none>          15s
+```
+
+As you can see from the results of the command, the cron job has not scheduled or run any jobs yet. Watch for the job to be created in around one minute:
+
+```console
+$ kubectl get jobs --watch
+NAME               COMPLETIONS   DURATION   AGE
+hello-1569340620   1/1           4s         65s
+hello-1569340680   1/1           4s         5s
+```
+
+To delete the CronJob:
+
+```console
+$ kubectl delete -f cron-job.yaml
+cronjob.batch "hello" deleted
+```
+
+
+
