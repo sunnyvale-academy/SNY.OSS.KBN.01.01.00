@@ -108,3 +108,23 @@ pod "busybox" deleted
 ```
 
 And indeed we see 0 keys being available, reported above.
+
+
+Don't forget to clean up after you:
+
+```console
+$ kubectl delete -f ../12-StorageClass/. 
+service "nfs-provisioner" deleted
+serviceaccount "nfs-provisioner" deleted
+deployment.apps "nfs-provisioner" deleted
+storageclass.storage.k8s.io "nfs-dynamic" deleted
+persistentvolumeclaim "nfs" deleted
+clusterrole.rbac.authorization.k8s.io "nfs-provisioner-runner" deleted
+clusterrolebinding.rbac.authorization.k8s.io "run-nfs-provisioner" deleted
+role.rbac.authorization.k8s.io "leader-locking-nfs-provisioner" deleted
+rolebinding.rbac.authorization.k8s.io "leader-locking-nfs-provisioner" deleted
+
+$ kubectl delete -f .
+service "mehdb" deleted
+statefulset.apps "mehdb" deleted
+```
