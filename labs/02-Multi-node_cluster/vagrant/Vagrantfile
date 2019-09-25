@@ -34,6 +34,8 @@ sudo sysctl net.bridge.bridge-nf-call-iptables=1
 kubectl apply -f /vagrant/kube-flannel.yml
 
 # Share NFS
+sudo mkdir -p /storage/dynamic
+sudo chmod -R 755 /storage
 sudo apt-get install -y nfs-kernel-server 
 sudo mkdir /shared
 sudo chmod 755 /shared

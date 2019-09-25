@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mehdb
+  labels:
+    app: mehdb
+spec:
+  ports:
+  - port: 9876
+  clusterIP: None
+  selector:
+    app: mehdb
