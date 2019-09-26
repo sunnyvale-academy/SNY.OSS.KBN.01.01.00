@@ -80,7 +80,7 @@ $ kubectl apply -f nginx-service.yaml
 service/nginx created
 ```
 
-If everything has been configured properly, if you point your browser to [http://localhost:31719](http://localhost:31719) you should be redirected to [http://www.sunnyvale.it](http://www.sunnyvale.it) website.
+If everything has been configured properly, if you point your browser to [http://192.168.26.11:31719](http://192.168.26.11:31719) you should be redirected to [http://www.sunnyvale.it](http://www.sunnyvale.it) website.
 
 To remove everything you created earlier:
 

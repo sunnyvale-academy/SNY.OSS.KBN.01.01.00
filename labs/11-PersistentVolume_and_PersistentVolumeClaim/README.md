@@ -14,7 +14,7 @@ Type the following to create the PV.
 
 ```console
 $ kubectl create -f nfs-volume.yaml
-persistentvolume/nfsvol
+persistentvolume/nfsvol created
 ```
 
 Let's check to see if it is available
