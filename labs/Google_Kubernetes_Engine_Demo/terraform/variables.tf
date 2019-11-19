@@ -53,13 +53,5 @@ variable "initial_node_count" {
   description = "The number of nodes to create in this cluster's default node pool."
 }
 
-variable "backend_bucket_name" {
-  type        = string
-  description = "The name of the bucket to be used as terraform state"
-}
 
-variable "onprem-net-cdir" {
-  type        = string
-  description = "The on-premise network CDIR (format x.x.x.x/y)"
-}
 

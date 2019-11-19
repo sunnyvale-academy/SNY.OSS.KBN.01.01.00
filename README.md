@@ -40,6 +40,8 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [17-DaemonSet](labs/17-DaemonSet/README.md)
 
+[Google Kubernetes Engine Demo](labs/Google_Kubernetes_Engine_Demo)
+
 ## Appendices
 
 [A-Sync copy of forked repo](appendices/A-Sync_copy_of_forked_repo/README.md)

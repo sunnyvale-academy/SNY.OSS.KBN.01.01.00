@@ -1,4 +1,5 @@
 *.tfstate
 *.json
 *.log
-
+.terraform
+*.backup

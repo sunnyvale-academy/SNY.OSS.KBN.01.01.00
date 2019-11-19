@@ -5,6 +5,7 @@
 - HashiCorp Terraform v. 0.12 or greater. [Download here](https://www.terraform.io/downloads.html)   
 - A valid Google Cloud Platform account (you can register for a free trial [here](https://cloud.google.com))
 - gcloud CLI tool [Download Google Cloud SDK here](https://cloud.google.com/sdk/docs/) 
+- kubectl CLI tool [Download here](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
 ## GCP new project configuration
 
@@ -136,8 +137,57 @@ In the `terraform.auto.tfvars` change the following values so as to reflect your
 ```terraform
 credentials    = "sny-prg-dvs-01-01-00-d6ee8c94b0e7.json"
 project_id         = "sny-prg-dvs-01-01-00"
-name               = "demo-gke-cluster"
-service_account    = "terraform@sny-prg-dvs-01-01-00.iam.gserviceaccount.com"
+service_account    = "devops@sny-prg-dvs-01-01-00.iam.gserviceaccount.com"
 ```
 
 Other variables can be left as they are.
+
+Then, apply your configurations
+
+```console
+$ terraform apply
+...
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+... 
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+```
+
+After a bunch of outputs, a green message like `Apply complete! Resources: 3 added, 0 changed, 0 destroyed.` notifies you that everything went fine and your GKE cluster has been provisioned.
+
+Next, grap the **kubeconfig** file, needed by kubectl to access to the cluster.
+
+```terraform
+$ gcloud beta container clusters get-credentials demo-gke-cluster --region europe-west4 --project sny-prg-dvs-01-01-00
+```
+
+**BE AWARE:** change project id 'sny-prg-dvs-01-01-00' with your
+
+Test your cluster:
+
+```console
+$ kubectl cluster-info 
+Kubernetes master is running at https://34.90.111.216
+calico-typha is running at https://34.90.111.216/api/v1/namespaces/kube-system/services/calico-typha:calico-typha/proxy
+GLBCDefaultBackend is running at https://34.90.111.216/api/v1/namespaces/kube-system/services/default-http-backend:http/proxy
+Heapster is running at https://34.90.111.216/api/v1/namespaces/kube-system/services/heapster/proxy
+KubeDNS is running at https://34.90.111.216/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+kubernetes-dashboard is running at https://34.90.111.216/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy
+Metrics-server is running at https://34.90.111.216/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
+```
+
+And/or
+
+```console
+$ kubectl get nodes
+NAME                                                  STATUS   ROLES    AGE   VERSION
+gke-demo-gke-cluster-default-node-poo-73396ce1-ktp8   Ready    <none>   20m   v1.14.8-gke.12
+gke-demo-gke-cluster-default-node-poo-73396ce1-wn6w   Ready    <none>   20m   v1.14.8-gke.12
+gke-demo-gke-cluster-default-node-poo-8634657d-4r35   Ready    <none>   20m   v1.14.8-gke.12
+gke-demo-gke-cluster-default-node-poo-95a3edf1-k1zp   Ready    <none>   20m   v1.14.8-gke.12
+gke-demo-gke-cluster-default-node-poo-95a3edf1-tp4r   Ready    <none>   20m   v1.14.8-gke.12
+```
+
