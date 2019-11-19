@@ -142,6 +142,12 @@ service_account    = "devops@sny-prg-dvs-01-01-00.iam.gserviceaccount.com"
 
 Other variables can be left as they are.
 
+Init the terraform environment
+```console
+$ terraform init
+...
+```
+
 Then, apply your configurations
 
 ```console
