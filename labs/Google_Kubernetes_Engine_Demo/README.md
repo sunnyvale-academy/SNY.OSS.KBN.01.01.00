@@ -164,6 +164,9 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 
 After a bunch of outputs, a green message like `Apply complete! Resources: 3 added, 0 changed, 0 destroyed.` notifies you that everything went fine and your GKE cluster has been provisioned.
 
+
+## Get the cluster's kubeconfig file
+
 Next, grap the **kubeconfig** file, needed by kubectl to access to the cluster.
 
 ```terraform
@@ -196,4 +199,35 @@ gke-demo-gke-cluster-default-node-poo-8634657d-4r35   Ready    <none>   20m   v1
 gke-demo-gke-cluster-default-node-poo-95a3edf1-k1zp   Ready    <none>   20m   v1.14.8-gke.12
 gke-demo-gke-cluster-default-node-poo-95a3edf1-tp4r   Ready    <none>   20m   v1.14.8-gke.12
 ```
+
+## Application deployment
+
+Move to the **app** folder
+
+```console
+$ cd <GIT_REPO_HOME>/labs/Google_Kubernetes_Engine_Demo/app
+```
+
+Apply all the resources declared in the **app.yml** file
+
+```console
+$ kubectl apply -f app.yml
+...
+```
+
+You should see some messages saying that resources have been created successfully
+
+To access the application, you will use the public IP address of the **voting-service** Service. To get it, type the following command:
+
+```console
+$ kubectl get services
+NAME             TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)        AGE
+db               ClusterIP      10.89.10.162   <none>           5432/TCP       16m
+kubernetes       ClusterIP      10.89.0.1      <none>           443/TCP        64m
+redis            ClusterIP      10.89.15.78    <none>           6379/TCP       16m
+result-service   LoadBalancer   10.89.4.191    34.90.157.102    80:32064/TCP   16m
+voting-service   LoadBalancer   10.89.4.19     35.204.214.174   80:32599/TCP   16m
+```
+
+In this example, you will point your browser to http://35.204.214.174.
 
