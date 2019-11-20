@@ -1,0 +1,19 @@
+cp-schema-registry:
+  enabled: false
+cp-kafka-rest:
+  enabled: false
+cp-kafka-connect:
+  enabled: false
+cp-zookeeper:
+  enabled: true
+  servers: 3
+  persistence:
+    enabled: true
+    dataDirStorageClass: "nfs-dynamic"
+    dataLogDirStorageClass: "nfs-dynamic"
+cp-kafka:
+  enabled: true
+  brokers: 3
+  persistence:
+    enabled: true
+    storageClass: "nfs-dynamic"
