@@ -7,9 +7,11 @@ spec:
   accessModes:
   - ReadWriteMany      
   resources:
+     limits:
+       storage: 1Gi
      requests:
        storage: 1Gi 
  # The selector field defines all labels necessary in a PV in order to match this claim
- # selector: 
- #   matchLabels:
- #     storage-type: nfs
+  selector: 
+    matchLabels:
+      storage-type: nfs

@@ -65,14 +65,14 @@ nginx-j7swj   1/1     Running   0          8s
 
 Now try to delete a Pod, you will see the RC that suddenly recreate another instance of the same Pod template.
 ```console
-kubectl delete pod nginx-c7nw7                                         
+$ kubectl delete pod nginx-c7nw7                                         
 pod "nginx-c7nw7" deleted
 ```
 
 RC successfully ensured the derired number of Pods (2)
 
 ```console
-kubectl get pods                                                      
+$ kubectl get pods                                                      
 NAME          READY   STATUS    RESTARTS   AGE
 nginx-j7swj   1/1     Running   0          80s
 nginx-t54sl   1/1     Running   0          16s
