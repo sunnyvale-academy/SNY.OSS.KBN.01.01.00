@@ -42,6 +42,8 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [18-Helm](labs/18-Helm/README.md)
 
+[19-Requests and Limits](labs/19-Requests_and_limits/README.md)
+
 [Google Kubernetes Engine Demo](labs/Google_Kubernetes_Engine_Demo)
 
 ## Appendices
