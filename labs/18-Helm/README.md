@@ -60,6 +60,13 @@ NAME            READY   UP-TO-DATE   AVAILABLE   AGE
 tiller-deploy   1/1     1            1           4m54s
 ```
 
+Patch the tiller-deploy specification
+
+```console
+$ kubectl --namespace kube-system patch deploy tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+deployment.extensions/tiller-deploy patched
+```
+
 You can also check che Helm-to-Tiller communication using the following command.
 
 ```console
