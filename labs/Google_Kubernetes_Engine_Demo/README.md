@@ -54,7 +54,7 @@ A new private key should have been downloaded on your computer, copy it into **<
 Run the `gcloud init` command to create a new configuration. Please choose the newly created project and authenticate to GCP by following the instructions.
 
 ```console
-vagrant@terraform-vm:~$ gcloud init
+$ gcloud init
 Welcome! This command will take you through the configuration of gcloud.
 
 Your current configuration has been set to: [default]
