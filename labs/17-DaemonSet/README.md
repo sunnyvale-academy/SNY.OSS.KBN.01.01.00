@@ -1,6 +1,14 @@
 # DaemonSet
 
+## Prerequisites
+
 Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
+
+```console
+$ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
+```
+
+## Applying DaemonSets
 
 A DaemonSet make sure that all or some kubernetes Nodes run a copy of a Pod. When a new node is added to the cluster, a Pod is added to it to match the rest of the nodes and when a node is removed from the cluster, the Pod is garbage collected. Deleting a DaemonSet will clean up the Pods it created.
 

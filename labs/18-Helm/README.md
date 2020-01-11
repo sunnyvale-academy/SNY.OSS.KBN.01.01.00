@@ -212,8 +212,7 @@ nfs                                  Bound    pvc-951e5d17-2b4d-4999-ab83-c8b69b
 ```
 
 ```console
-$ 
-kubectl get po 
+$ kubectl get po 
 NAME                                      READY   STATUS    RESTARTS   AGE
 my-kafka-cp-kafka-0                       2/2     Running   0          32s
 my-kafka-cp-kafka-1                       2/2     Running   0          25s
@@ -232,10 +231,6 @@ $ helm delete --purge my-kafka
 release "my-kafka" deleted
 ```
 
-```console
-$ 
-release "my-kafka" deleted
-```
 
 ```console
 $ kubectl delete -f ../12-StorageClass/.

@@ -81,6 +81,8 @@ Vagrant.configure("2") do |config|
         vb.name = "master"
       end
       subconfig.vm.provision :shell, inline: $kubemasterscript
+      subconfig.vm.provision :shell, :path => "scripts/install_on_cluster.sh"
+      subconfig.vm.synced_folder "../..", "/usr/src/git_repo"
     end
   end
   

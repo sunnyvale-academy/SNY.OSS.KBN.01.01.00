@@ -8,6 +8,41 @@ Before using **kubectl**, please set the **KUBECONFIG** environment variable to 
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
+**Metrics server** have to be installed before running `kubectl top` command. The provided Vagrant based cluster has been provisioned with Metrics server installed.
+
+To check if metric server is running:
+
+```console
+$ kubectl get deploy,svc -n kube-system |egrep metrics-server
+
+deployment.extensions/metrics-server   1/1     1            1           32m
+service/metrics-server   ClusterIP   10.102.187.108   <none>        443/TCP                  32m
+```
+
+In the case you need to reinstall metric server:
+
+```console
+$ kubectl delete -f ../02-Multi-node_cluster/vagrant/metrics-server/deploy/1.8+/ && kubectl apply -f ../02-Multi-node_cluster/vagrant/metrics-server/deploy/1.8+/
+clusterrole.rbac.authorization.k8s.io "system:aggregated-metrics-reader" deleted
+clusterrolebinding.rbac.authorization.k8s.io "metrics-server:system:auth-delegator" deleted
+rolebinding.rbac.authorization.k8s.io "metrics-server-auth-reader" deleted
+apiservice.apiregistration.k8s.io "v1beta1.metrics.k8s.io" deleted
+serviceaccount "metrics-server" deleted
+deployment.apps "metrics-server" deleted
+service "metrics-server" deleted
+clusterrole.rbac.authorization.k8s.io "system:metrics-server" deleted
+clusterrolebinding.rbac.authorization.k8s.io "system:metrics-server" deleted
+clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created
+clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created
+rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created
+apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
+serviceaccount/metrics-server created
+deployment.apps/metrics-server created
+service/metrics-server created
+clusterrole.rbac.authorization.k8s.io/system:metrics-server created
+clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created
+```
+
 ## Applying resource requests and limits
 
 Within the pod configuration file cpu and memory are each a resource type for which constraints can be set at the container level. A resource type has a base unit. CPU is specified in units of cores, and memory is specified in units of bytes. Two types of constraints can be set for each resource type: requests and limits.
@@ -21,128 +56,84 @@ Below is an example of a pod configuration file with requests and limits set for
 ```yaml
 kind: Pod
 metadata:
-  name: java-resource-tester-pod
+  name: resource-tester-pod
 spec:
   containers:
-  - name: java-resource-tester
+  - name: resource-tester
     image: sunnyvale/resource-tester:1.0
+    command: 
+      - stress-ng 
+      - --vm 
+      - "1"
+      - --vm-bytes 
+      - "40m"
+      - --vm-keep
+    imagePullPolicy: Always
     resources:
       requests:
-        memory: "60Mi"
-        cpu: "500m"
+        memory: "50Mi"
+        cpu: "100m"
       limits:
-        memory: "128Mi"
-        cpu: "500m"
+        memory: "100Mi"
+        cpu: "300m"
 ```
 
-This Pod start a container based on the Docker image sunnyvale/resource-tester:1.0. As the container's entrypoint, a Java class is run with the pourpose to display how many CPU's and GB of RAM the Java process perceives.
-
-```java
-...
-public static void main(String[] args) {
-        Runtime rt = Runtime.getRuntime();
-        Vector v = new Vector();
-
-        while (rt.freeMemory() > 5210000) {
-            byte b[] = new byte[1024000];
-            v.add(b);
-            rt = Runtime.getRuntime();
-            System.out.println("Used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024 + " MB");
-        }
-
-        System.out.println("Max Processors: " + Runtime.getRuntime().availableProcessors());
-        System.out.println("Max Memory: " + Runtime.getRuntime().maxMemory() / 1024 / 1024);
-    }
-...
-```
-Saying that, a Kubernetes node should have been provisioned with 1 CPU and 1024 MB of RAM, let's apply this Pod configuration and see the output with request and limits as configured in the YAML file.
+This Pod start a container based on the Docker image **sunnyvale/resource-tester:1.0**. The image contains **stress-ng** that will be used to test pod's requests and limits in term of CPU and RAM.
 
 ```console
-$ kubectcl apply -f java-pod.yaml
-pod/java-resource-tester-pod created
+$ kubectl apply -f pod.yaml
+pod/resource-tester-pod created
 ```
+
+wait a few seconds then type:
 
 ```console
-$ kubectl logs pod/java-resource-tester-pod 
-...
-Max Processors: 1
-Max Memory: 61
+$ kubectl top pod resource-tester-pod 
+NAME                  CPU(cores)   MEMORY(bytes)   
+resource-tester-pod   900m         42Mi      
 ```
 
-**Max Processors** was 1 because the JDK round 0.5 to the next integer number. The Javadoc says about Runtime.availableProcessors() method that: returns the maximum number of processors available to the virtual machine; **never smaller than one**.
+As you can see, we have verified the following situation:
 
-**Max Memory** was 61 as the memory request we made on the Pod's container specification.
+Pod memory demand: 40m circa
+Pod memory request: 50m
+Pod memory limit: 100m
 
-Now, in the Pod specification yaml, uncomment the environment variable JAVA_OPTS (which in turns allocates 128m of Java Heap). 
+Pod CPU demand: 300m
+Pod CPU request: 100m
+Pod CPU limit: 900m
 
-```yaml
-...
-    env:
-      - name: JAVA_OPTS
-        value: "-Xms128m"
-...
-```
 
-Then, destroy and recreate the Pod (modifications about env variables are not allowed)
+Now let's try to overload the pod memory behind its limit (100Mi) by changing the stress-ng start parameter (we configure stress-ng to take up to 150Mi)
 
 ```console
-$ kubectl delete -f java-pod.yaml
-pod "java-resource-tester-pod" deleted
+$ kubectl delete -f pod.yaml && cat pod.yaml| sed -e 's/40m/150m/' | kubectl apply -f -
+pod "resource-tester-pod" deleted
+pod/resource-tester-pod created
 ```
+
+After applying the changed configuration, the pod is continues taking up to 500Mi of RAM, as its limit states.
+
+```console
+$ kubectl top pod resource-tester-pod
+NAME                  CPU(cores)   MEMORY(bytes)   
+resource-tester-pod   956m         499Mi 
+```
+
+To let the pod grow its memory, just change its limit at runtime.
+
+```console
+$ kubectl delete -f pod.yaml && cat pod.yaml | sed -e 's/400m/600m/' | sed -e 's/500Mi/600Mi/' | kubectl apply -f -
+pod "resource-tester-pod" deleted
+pod/resource-tester-pod created
+```
+
+
+
 
 
 ```console
-$ kubectl apply -f java-pod.yaml
-pod/java-resource-tester-pod created
-```
-
-
-```console
-$ kubectl logs pod/java-resource-tester-pod  
-...
-Max Processors: 1
-Max Memory: 123
-```
-
-**Max Memory** was 123, close to 128, as the memory limit we made on the Pod's container specification.
-
-The last example will make you test to allocate more Java heap than the memory the cointainer is allowed to consume.
-
-```yaml
-...
-    env:
-      - name: JAVA_OPTS
-        value: "-Xms512m"
-...
-```
-
-```console
-$ kubectl delete -f java-pod.yaml
-pod "java-resource-tester-pod" deleted
-```
-
-
-```console
-$ kubectl apply -f java-pod.yaml
-pod/java-resource-tester-pod created
-```
-
-
-```console
-$ kubectl logs pod/java-resource-tester-pod   
-...
-Used memory: 94 MB
-Used memory: 95 MB
-Used memory: 96 MB
-Used memory: 97 MB
-Used memory: 98 MB
-Killed
-```
-
-```console
-$ kubectl get po                                                           
-NAME                       READY   STATUS             RESTARTS   AGE
-java-resource-tester-pod   0/1     CrashLoopBackOff   3          102s
+$ kubectl get po/resource-tester-pod -n limitrange-demo -o json | jq ".spec.containers[0].resources"
 ```
 
 Kubernetes killed the Pod since is trying to allocate (and use) more than 128Mi.

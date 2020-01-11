@@ -4,12 +4,10 @@
 # docker login
 # docker push sunnyvale/resource-tester:1.0
 
-FROM openjdk:11.0-jdk
+FROM ubuntu:latest
 
-ADD app/ /app/
+RUN apt-get update -y && \
+    apt-get install -y stress-ng
 
-ENV JAVA_OPTS -Xms50m 
-
-ENTRYPOINT /usr/local/openjdk-11/bin/java $JAVA_OPTS -XX:+PrintCommandLineFlags -XX:MaxRAMFraction=1 /app/TestResources.java
 
 

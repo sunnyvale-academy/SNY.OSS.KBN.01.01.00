@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: resource-tester-pod
+spec:
+  containers:
+  - name: resource-tester
+    image: sunnyvale/resource-tester:1.0
+    command: 
+      - stress-ng 
+      - -m 
+      - "1"
+      - --vm-bytes 
+      - "40m"
+      - "--vm-keep"
+      - "-v"
+      - "--oomable"
+    imagePullPolicy: Always
+    resources:
+      requests:
+        memory: "50Mi"
+        cpu: "100m"
+      limits:
+        memory: "100Mi"
+        cpu: "900m"
