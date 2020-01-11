@@ -46,7 +46,7 @@ To manage RBAC in Kubernetes, apart from **resources** and **operations**, we ne
 - **Subjects**: These correspond to the entity that attempts an operation in the cluster. There are three types of subjects:
     - **User Accounts**: These are global, and meant for humans or processes living outside the cluster. There is no associated resource API Object in the Kubernetes cluster.
     - **Service Accounts**: This kind of account is namespaced and meant for intra-cluster processes running inside pods, which want to authenticate against the API.
-    - **Groups**: This is used for referring to multiple accounts. There are some groups created by default such as cluster-admin (explained in later sections).
+    - **Groups**: This is used for referring to multiple accounts. There are some groups created by default such as cluster-admin.
 - **RoleBindings** and **ClusterRoleBindings**: Just as the names imply, these bind subjects to roles (i.e. the operations a given user can perform). As for Roles and ClusterRoles, the difference lies in the scope: a RoleBinding will make the rules effective inside a namespace, whereas a ClusterRoleBinding will make the rules effective in all namespaces.
 
 ## Create User With Limited Namespace Access
@@ -113,3 +113,57 @@ Now you should get an access denied error when using the kubectl CLI with this c
 $ kubectl --context=denis-context get pods
 Error from server (Forbidden): pods is forbidden: User "denis" cannot list resource "pods" in API group "" in the namespace "office"
 ```
+
+Let's move ahead by creating the new deployment-manager role. To understand the role's capabilities just inspect the [office_deployment-manager_role.yaml](office_deployment-manager_role.yaml) file.
+
+
+```console
+$ kubectl apply -f office_deployment-manager_role.yaml
+role.rbac.authorization.k8s.io/deployment-manager created
+```
+
+To bind the role to the **denis** user, yust apply the [denis_office_deployment-manager_role_binding.yaml](denis_office_deployment-manager_role_binding.yaml) file as showed here after.
+
+```console
+$ kubectl apply -f denis_office_deployment-manager_role_binding.yaml
+rolebinding.rbac.authorization.k8s.io/deployment-manager-binding created
+```
+
+Now let's test the RBAC rule by deploying a new Pod with denis user:
+
+
+```console
+$ kubectl --context=denis-context run --image bitnami/dokuwiki mydokuwiki
+deployment.apps/mydokuwiki created
+```
+
+To test the same command it was failing before:
+
+
+```console
+$ kubectl --context=denis-context get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+mydokuwiki-75d4b8ddb5-vttpb   1/1     Running   0          58s
+```
+
+Don't forget to clean-up before proceeding:
+
+
+```console
+$ kubectl delete deployment mydokuwiki --namespace office  
+deployment.extensions "mydokuwiki" deleted
+```
+
+```console
+$ kubectl delete deployment mydokuwiki --namespace office  
+deployment.extensions "mydokuwiki" deleted
+```
+
+```console
+$ kubectl delete -f . 
+rolebinding.rbac.authorization.k8s.io "deployment-manager-binding" deleted
+role.rbac.authorization.k8s.io "deployment-manager" deleted
+```
+
+
+
