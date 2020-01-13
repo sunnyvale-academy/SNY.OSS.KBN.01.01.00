@@ -101,6 +101,8 @@ cp-zookeeper:
     enabled: true
     dataDirStorageClass: "nfs-dynamic"
     dataLogDirStorageClass: "nfs-dynamic"
+cp-ksql-server:
+  enabled: false
 cp-kafka:
   enabled: true
   brokers: 3
@@ -143,10 +145,10 @@ $ kubectl get po
 NAME                                      READY   STATUS              RESTARTS   AGE
 my-kafka-cp-kafka-0                       2/2     Running             1          4m39s
 my-kafka-cp-kafka-1                       2/2     Running             0          63s
-my-kafka-cp-kafka-2                       0/2     ContainerCreating   0          1s
+my-kafka-cp-kafka-2                       0/2     Running             0          1s
 my-kafka-cp-ksql-server-7f9cb89b4-sqb6p   2/2     Running             1          4m39s
 my-kafka-cp-zookeeper-0                   2/2     Running             0          4m39s
-my-kafka-cp-zookeeper-1                   0/2     ContainerCreating   0          31s
+my-kafka-cp-zookeeper-1                   0/2     Running             0          31s
 nfs-provisioner-77bb4bd457-zknsq          1/1     Running             0          5m52s
 ```
 
@@ -169,7 +171,6 @@ clusterrole.rbac.authorization.k8s.io "nfs-provisioner-runner" deleted
 clusterrolebinding.rbac.authorization.k8s.io "run-nfs-provisioner" deleted
 role.rbac.authorization.k8s.io "leader-locking-nfs-provisioner" deleted
 rolebinding.rbac.authorization.k8s.io "leader-locking-nfs-provisioner" deleted
-
 ```
 
 

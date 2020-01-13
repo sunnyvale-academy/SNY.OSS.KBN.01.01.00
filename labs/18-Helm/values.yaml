@@ -8,7 +8,7 @@ cp-zookeeper:
   enabled: true
   servers: 3
   persistence:
-    enabled: false
+    enabled: true
     dataDirStorageClass: "nfs-dynamic"
     dataLogDirStorageClass: "nfs-dynamic"
 cp-ksql-server:
