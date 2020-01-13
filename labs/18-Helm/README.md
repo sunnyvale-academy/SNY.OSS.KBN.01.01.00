@@ -8,7 +8,15 @@ Before using **kubectl**, please set the **KUBECONFIG** environment variable to 
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
-![Helm Architecture](img/Helm-Architecture.png)
+This lab works form Helm version 3 onwards.
+
+To check the Helm version type:
+
+```console
+$ helm version
+version.BuildInfo{Version:"v3.0.1", GitCommit:"7c22ef9ce89e0ebeb7125ba2ebf7d421f3e82ffa", GitTreeState:"clean", GoVersion:"go1.13.4"}
+```
+
 
 ## Helm (CLI) installation
 
@@ -29,52 +37,6 @@ On Windows (using Chocolatey)
 ```console
 $ choco install kubernetes-helm
 ```
-
-## Helm configuration
-
-Create Tiller Service Account With Cluster Admin Permissions
-
-```console
-$ kubectl apply -f helm-rbac.yaml 
-serviceaccount/tiller created
-clusterrolebinding.rbac.authorization.k8s.io/tiller created
-```
-
-
-## Helm initialization (Tiller deployment)
-
-Let's install the Tiller component (the Helm backend)
-
-```console
-$ helm init --service-account=tiller 
-$HELM_HOME has been configured at /Users/denismaggiorotto/.helm.
-
-Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
-```
-
-You can check the tiller deployment in the kube-system namespace using kubectl.
-
-```console
-$ kubectl get deployment tiller-deploy -n kube-system
-NAME            READY   UP-TO-DATE   AVAILABLE   AGE
-tiller-deploy   1/1     1            1           4m54s
-```
-
-Patch the tiller-deploy specification
-
-```console
-$ kubectl --namespace kube-system patch deploy tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
-deployment.extensions/tiller-deploy patched
-```
-
-You can also check che Helm-to-Tiller communication using the following command.
-
-```console
-$ helm ls
-
-```
-
-An empty response is expected at this point since we did not install anything yet.
 
 ## Deployment prerequisites
 
@@ -150,78 +112,42 @@ cp-kafka:
 This values.yaml file will be used when installing the chart.
 
 ```console
-$ helm install --name my-kafka --values=values.yaml confluentinc/cp-helm-charts
-NAME:   my-kafka
-LAST DEPLOYED: Wed Nov 20 00:49:56 2019
+$ helm install my-kafka --values=values.yaml confluentinc/cp-helm-charts
+NAME: my-kafka
+LAST DEPLOYED: Mon Jan 13 23:43:44 2020
 NAMESPACE: default
-STATUS: DEPLOYED
-
-RESOURCES:
-==> v1/ConfigMap
-NAME                                            AGE
-my-kafka-cp-kafka-jmx-configmap                 0s
-my-kafka-cp-ksql-server-jmx-configmap           0s
-my-kafka-cp-ksql-server-ksql-queries-configmap  0s
-my-kafka-cp-zookeeper-jmx-configmap             0s
-
-==> v1/Pod(related)
-NAME                                     AGE
-my-kafka-cp-kafka-0                      0s
-my-kafka-cp-ksql-server-7f9cb89b4-m48tk  0s
-my-kafka-cp-zookeeper-0                  0s
-
-==> v1/Service
-NAME                            AGE
-my-kafka-cp-kafka               0s
-my-kafka-cp-kafka-headless      0s
-my-kafka-cp-ksql-server         0s
-my-kafka-cp-zookeeper           0s
-my-kafka-cp-zookeeper-headless  0s
-
-==> v1beta1/PodDisruptionBudget
-NAME                       AGE
-my-kafka-cp-zookeeper-pdb  0s
-
-==> v1beta1/StatefulSet
-NAME                   AGE
-my-kafka-cp-kafka      0s
-my-kafka-cp-zookeeper  0s
-
-==> v1beta2/Deployment
-NAME                     AGE
-my-kafka-cp-ksql-server  0s
+STATUS: deployed
+REVISION: 1
+NOTES:
 ...
 ```
 
 ```console
 $ helm list
-NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE
-my-kafka        1               Wed Nov 20 00:46:34 2019        DEPLOYED        cp-helm-charts-0.1.0    1.0             default  
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+my-kafka        default         1               2020-01-13 23:43:44.841543 +0100 CET    deployed        cp-helm-charts-0.1.0    1.0     
 ```
 
 ```console
 $ kubectl get pvc                                                        
 NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-datadir-0-my-kafka-cp-kafka-0        Bound    pvc-5eb40135-66d4-4651-a3d8-3c5aff99ae8d   5Gi        RWO            nfs-dynamic    16s
-datadir-0-my-kafka-cp-kafka-1        Bound    pvc-320038d1-5093-4c2c-bbed-2c06b6182c9e   5Gi        RWO            nfs-dynamic    9s
-datadir-my-kafka-cp-zookeeper-0      Bound    pvc-a5648755-4765-4e85-adc3-4b4205bb8f2a   5Gi        RWO            nfs-dynamic    16s
-datadir-my-kafka-cp-zookeeper-1      Bound    pvc-8d6ed9d2-e2e8-4f4a-adeb-114326f515ad   5Gi        RWO            nfs-dynamic    11s
-datalogdir-my-kafka-cp-zookeeper-0   Bound    pvc-2d2f0985-d30b-438c-8684-38efb30ff799   5Gi        RWO            nfs-dynamic    16s
-datalogdir-my-kafka-cp-zookeeper-1   Bound    pvc-1b3d3c3f-5bfe-4653-a031-30773ea5a4fa   5Gi        RWO            nfs-dynamic    11s
-nfs                                  Bound    pvc-951e5d17-2b4d-4999-ab83-c8b69b112cb3   1Mi        RWX            nfs-dynamic    64m
+datadir-0-my-kafka-cp-kafka-0        Bound    pvc-6815cc63-b045-49ba-9506-ef8fb206f137   5Gi        RWO            nfs-dynamic    4m8s
+datadir-0-my-kafka-cp-kafka-1        Bound    pvc-54222ab3-c38c-49e1-9f94-1b0f1fae6e33   5Gi        RWO            nfs-dynamic    32s
+datadir-my-kafka-cp-zookeeper-0      Bound    pvc-3def2ae4-5d6b-45c7-8bbc-6665c07e0a7f   5Gi        RWO            nfs-dynamic    4m8s
+datalogdir-my-kafka-cp-zookeeper-0   Bound    pvc-c16c394d-1fb9-4fa7-a1a8-8cd559722555   5Gi        RWO            nfs-dynamic    4m8s
+nfs 
 ```
 
 ```console
 $ kubectl get po 
-NAME                                      READY   STATUS    RESTARTS   AGE
-my-kafka-cp-kafka-0                       2/2     Running   0          32s
-my-kafka-cp-kafka-1                       2/2     Running   0          25s
-my-kafka-cp-kafka-2                       0/2     Running   0          14s
-my-kafka-cp-ksql-server-7f9cb89b4-kk6m4   2/2     Running   2          32s
-my-kafka-cp-zookeeper-0                   2/2     Running   0          32s
-my-kafka-cp-zookeeper-1                   2/2     Running   0          27s
-my-kafka-cp-zookeeper-2                   2/2     Running   0          16s
-nfs-provisioner-77bb4bd457-pbxlm          1/1     Running   0          64m
+NAME                                      READY   STATUS              RESTARTS   AGE
+my-kafka-cp-kafka-0                       2/2     Running             1          4m39s
+my-kafka-cp-kafka-1                       2/2     Running             0          63s
+my-kafka-cp-kafka-2                       0/2     ContainerCreating   0          1s
+my-kafka-cp-ksql-server-7f9cb89b4-sqb6p   2/2     Running             1          4m39s
+my-kafka-cp-zookeeper-0                   2/2     Running             0          4m39s
+my-kafka-cp-zookeeper-1                   0/2     ContainerCreating   0          31s
+nfs-provisioner-77bb4bd457-zknsq          1/1     Running             0          5m52s
 ```
 
 Remove everything:

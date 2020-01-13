@@ -8,9 +8,11 @@ cp-zookeeper:
   enabled: true
   servers: 3
   persistence:
-    enabled: true
+    enabled: false
     dataDirStorageClass: "nfs-dynamic"
     dataLogDirStorageClass: "nfs-dynamic"
+cp-ksql-server:
+  enabled: false
 cp-kafka:
   enabled: true
   brokers: 3
