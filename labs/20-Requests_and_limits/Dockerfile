@@ -7,7 +7,8 @@
 FROM ubuntu:latest
 
 RUN apt-get update -y && \
-    apt-get install -y stress-ng
+    apt-get install -y stress-ng && \
+    apt-get install -y stress
 
 
 

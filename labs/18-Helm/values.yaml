@@ -6,7 +6,7 @@ cp-kafka-connect:
   enabled: false
 cp-zookeeper:
   enabled: true
-  servers: 3
+  servers: 1
   persistence:
     enabled: true
     dataDirStorageClass: "nfs-dynamic"
@@ -15,7 +15,7 @@ cp-ksql-server:
   enabled: false
 cp-kafka:
   enabled: true
-  brokers: 3
+  brokers: 1
   persistence:
     enabled: true
     storageClass: "nfs-dynamic"

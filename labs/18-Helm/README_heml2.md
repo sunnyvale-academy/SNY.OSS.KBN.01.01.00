@@ -15,7 +15,7 @@ $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 On *nix
 
 ```console
-$ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+$ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-2 | bash
 ```
 
 On MacOS (using Homebrew)

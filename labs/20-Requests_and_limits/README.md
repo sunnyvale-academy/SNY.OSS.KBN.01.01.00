@@ -63,11 +63,13 @@ spec:
     image: sunnyvale/resource-tester:1.0
     command: 
       - stress-ng 
-      - --vm 
+      - --vm
       - "1"
       - --vm-bytes 
       - "40m"
-      - --vm-keep
+      - "--vm-hang"
+      - "1"
+      - -v
     imagePullPolicy: Always
     resources:
       requests:
@@ -75,7 +77,7 @@ spec:
         cpu: "100m"
       limits:
         memory: "100Mi"
-        cpu: "300m"
+        cpu: "900m"
 ```
 
 This Pod start a container based on the Docker image **sunnyvale/resource-tester:1.0**. The image contains **stress-ng** that will be used to test pod's requests and limits in term of CPU and RAM.
@@ -90,21 +92,21 @@ wait a few seconds then type:
 ```console
 $ kubectl top pod resource-tester-pod 
 NAME                  CPU(cores)   MEMORY(bytes)   
-resource-tester-pod   900m         42Mi      
+resource-tester-pod   16m          40Mi       
 ```
 
 As you can see, we have verified the following situation:
 
-Pod memory demand: 40m circa
+Pod memory demand (stress argument): 40m
 Pod memory request: 50m
 Pod memory limit: 100m
+Pod memory usage (kubectl top output): 40m
 
-Pod CPU demand: 300m
 Pod CPU request: 100m
 Pod CPU limit: 900m
+Pod CPU usage (kubectl top output): 18m
 
-
-Now let's try to overload the pod memory behind its limit (100Mi) by changing the stress-ng start parameter (we configure stress-ng to take up to 150Mi)
+Now let's try to overload the pod memory behind its limit (100Mi) by changing the stress argument (we configure stress to take up to 150m)
 
 ```console
 $ kubectl delete -f pod.yaml && cat pod.yaml| sed -e 's/40m/150m/' | kubectl apply -f -
@@ -112,30 +114,49 @@ pod "resource-tester-pod" deleted
 pod/resource-tester-pod created
 ```
 
-After applying the changed configuration, the pod is continues taking up to 500Mi of RAM, as its limit states.
+After applying the changed configuration, the pod gets killed due to out of memory (OOMKilled).
 
 ```console
-$ kubectl top pod resource-tester-pod
-NAME                  CPU(cores)   MEMORY(bytes)   
-resource-tester-pod   956m         499Mi 
+$ kubectl get po
+NAME                  READY   STATUS      RESTARTS   AGE
+resource-tester-pod   0/1     OOMKilled   0          5s
 ```
 
-To let the pod grow its memory, just change its limit at runtime.
+As you can see, we have verified the following situation:
+
+Pod memory demand (stress argument): 150m
+Pod memory request: 50m
+Pod memory limit: 100m
+Pod memory usage (kubectl top output): 0m
+
+Get a more detailed view of the Container status:
 
 ```console
-$ kubectl delete -f pod.yaml && cat pod.yaml | sed -e 's/400m/600m/' | sed -e 's/500Mi/600Mi/' | kubectl apply -f -
+$ kubectl get po resource-tester-pod --output=yaml
+...
+lastState:
+      terminated:
+        containerID: docker://8d409bf163d1dcb1b2e1c9de417d7cfa5025cc68e7ad20e723ad2f257e3bac28
+        exitCode: 1
+        finishedAt: "2020-01-14T01:06:43Z"
+        reason: OOMKilled
+        startedAt: "2020-01-14T01:06:43Z"
+...
+```
+
+The output shows that the Container was killed because it is out of memory (OOM).
+
+If you do not specify a memory limit?
+
+If you do not specify a memory limit for a Container, one of the following situations applies:
+
+- The Container has no upper bound on the amount of memory it uses. The Container could use all of the memory available on the Node where it is running which in turn could invoke the OOM Killer. 
+
+- The Container is running in a namespace that has a default memory limit, and the Container is automatically assigned the default limit. Cluster administrators can use a LimitRange to specify a default value for the memory limit.
+
+Don't forget to clean up the pod
+
+```console
+$ kubectl delete -f pod.yaml
 pod "resource-tester-pod" deleted
-pod/resource-tester-pod created
 ```
-
-
-
-
-
-```console
-$ kubectl get po/resource-tester-pod -n limitrange-demo -o json | jq ".spec.containers[0].resources"
-```
-
-Kubernetes killed the Pod since is trying to allocate (and use) more than 128Mi.
-
-After 3 restart, the Pod is marked as **CrashLoopBackOff**.
