@@ -133,29 +133,48 @@ my-kafka        default         1               2020-01-13 23:43:44.841543 +0100
 ```console
 $ kubectl get pvc                                                        
 NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-datadir-0-my-kafka-cp-kafka-0        Bound    pvc-6815cc63-b045-49ba-9506-ef8fb206f137   5Gi        RWO            nfs-dynamic    4m8s
-datadir-0-my-kafka-cp-kafka-1        Bound    pvc-54222ab3-c38c-49e1-9f94-1b0f1fae6e33   5Gi        RWO            nfs-dynamic    32s
-datadir-my-kafka-cp-zookeeper-0      Bound    pvc-3def2ae4-5d6b-45c7-8bbc-6665c07e0a7f   5Gi        RWO            nfs-dynamic    4m8s
-datalogdir-my-kafka-cp-zookeeper-0   Bound    pvc-c16c394d-1fb9-4fa7-a1a8-8cd559722555   5Gi        RWO            nfs-dynamic    4m8s
-nfs 
+datadir-0-my-kafka-cp-kafka-0        Bound    pvc-d6cdc406-7916-4b75-9660-a24f9bc7c9c1   5Gi        RWO            nfs-dynamic    5m19s
+datadir-0-my-kafka-cp-kafka-1        Bound    pvc-0feecc14-258a-443e-aa7f-41d2d465cd2a   5Gi        RWO            nfs-dynamic    88s
+datadir-0-my-kafka-cp-kafka-2        Bound    pvc-eae8bee3-5d51-4fda-b5db-44e2f7149634   5Gi        RWO            nfs-dynamic    45s
+datadir-my-kafka-cp-zookeeper-0      Bound    pvc-ca846262-e727-421e-a908-8ee74be79d95   5Gi        RWO            nfs-dynamic    5m19s
+datadir-my-kafka-cp-zookeeper-1      Bound    pvc-266f08ce-f178-4e8d-b426-c51eca49a4a5   5Gi        RWO            nfs-dynamic    79s
+datadir-my-kafka-cp-zookeeper-2      Bound    pvc-3add7ae9-1cce-4dae-8dcf-fe4ac38d89c5   5Gi        RWO            nfs-dynamic    38s
+datalogdir-my-kafka-cp-zookeeper-0   Bound    pvc-5444a6dd-59a6-4c41-a185-bac75e10cd4f   5Gi        RWO            nfs-dynamic    5m19s
+datalogdir-my-kafka-cp-zookeeper-1   Bound    pvc-33d925c3-4598-4078-a626-dc1408b9a983   5Gi        RWO            nfs-dynamic    79s
+datalogdir-my-kafka-cp-zookeeper-2   Bound    pvc-b954cacf-84c8-4a54-9d85-c70407692790   5Gi        RWO            nfs-dynamic    38s
+```
+
+```console
+$ kubectl get pv                                                        
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                        STORAGECLASS   REASON   AGE
+pvc-0feecc14-258a-443e-aa7f-41d2d465cd2a   5Gi        RWO            Delete           Bound    default/datadir-0-my-kafka-cp-kafka-1        nfs-dynamic             2m51s
+pvc-266f08ce-f178-4e8d-b426-c51eca49a4a5   5Gi        RWO            Delete           Bound    default/datadir-my-kafka-cp-zookeeper-1      nfs-dynamic             2m41s
+pvc-33d925c3-4598-4078-a626-dc1408b9a983   5Gi        RWO            Delete           Bound    default/datalogdir-my-kafka-cp-zookeeper-1   nfs-dynamic             2m40s
+pvc-3add7ae9-1cce-4dae-8dcf-fe4ac38d89c5   5Gi        RWO            Delete           Bound    default/datadir-my-kafka-cp-zookeeper-2      nfs-dynamic             119s
+pvc-5444a6dd-59a6-4c41-a185-bac75e10cd4f   5Gi        RWO            Delete           Bound    default/datalogdir-my-kafka-cp-zookeeper-0   nfs-dynamic             6m38s
+pvc-b954cacf-84c8-4a54-9d85-c70407692790   5Gi        RWO            Delete           Bound    default/datalogdir-my-kafka-cp-zookeeper-2   nfs-dynamic             119s
+pvc-ca846262-e727-421e-a908-8ee74be79d95   5Gi        RWO            Delete           Bound    default/datadir-my-kafka-cp-zookeeper-0      nfs-dynamic             6m39s
+pvc-d6cdc406-7916-4b75-9660-a24f9bc7c9c1   5Gi        RWO            Delete           Bound    default/datadir-0-my-kafka-cp-kafka-0        nfs-dynamic             6m40s
+pvc-eae8bee3-5d51-4fda-b5db-44e2f7149634   5Gi        RWO            Delete           Bound    default/datadir-0-my-kafka-cp-kafka-2        nfs-dynamic             2m8s
 ```
 
 ```console
 $ kubectl get po 
 NAME                                      READY   STATUS              RESTARTS   AGE
-my-kafka-cp-kafka-0                       2/2     Running             1          4m39s
-my-kafka-cp-kafka-1                       2/2     Running             0          63s
-my-kafka-cp-kafka-2                       0/2     Running             0          1s
-my-kafka-cp-ksql-server-7f9cb89b4-sqb6p   2/2     Running             1          4m39s
-my-kafka-cp-zookeeper-0                   2/2     Running             0          4m39s
-my-kafka-cp-zookeeper-1                   0/2     Running             0          31s
-nfs-provisioner-77bb4bd457-zknsq          1/1     Running             0          5m52s
+NAME                               READY   STATUS             RESTARTS   AGE
+my-kafka-cp-kafka-0                2/2     Running            3          7m33s
+my-kafka-cp-kafka-1                2/2     Running            2          3m42s
+my-kafka-cp-kafka-2                2/2     Running            2          2m59s
+my-kafka-cp-zookeeper-0            2/2     Running            0          7m33s
+my-kafka-cp-zookeeper-1            2/2     Running            0          3m33s
+my-kafka-cp-zookeeper-2            2/2     Running            0          2m52s
+nfs-provisioner-77bb4bd457-g6z2x   1/1     Running            0          9m26s
 ```
 
 Remove everything:
 
 ```console
-$ helm delete --purge my-kafka
+$ helm uninstall my-kafka
 release "my-kafka" deleted
 ```
 
