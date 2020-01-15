@@ -5,17 +5,25 @@ cp-kafka-rest:
 cp-kafka-connect:
   enabled: false
 cp-zookeeper:
+  heapOptions: "-Xms256M -Xmx256M"
+  imageTag: 4.1.2-1
   enabled: true
-  servers: 1
+  servers: 3
   persistence:
     enabled: true
     dataDirStorageClass: "nfs-dynamic"
     dataLogDirStorageClass: "nfs-dynamic"
+    dataDirSize: 0.1Gi
+    dataLogDirSize: 0.1Gi
 cp-ksql-server:
   enabled: false
 cp-kafka:
+  heapOptions: "-Xms256M -Xmx256M"
+  image: confluentinc/cp-kafka
+  imageTag: 5.3.2
   enabled: true
-  brokers: 1
+  brokers: 2
   persistence:
     enabled: true
     storageClass: "nfs-dynamic"
+    size: 0.1Gi

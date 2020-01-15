@@ -46,7 +46,8 @@ spec:
         "kubernetes.io/hostname": master
       containers:
         - name: nfs-provisioner
-          image: quay.io/kubernetes_incubator/nfs-provisioner:v1.0.8
+          image: quay.io/kubernetes_incubator/nfs-provisioner:v2.2.2
+          #image: quay.io/kubernetes_incubator/nfs-provisioner:v1.0.8
           ports:
             - name: nfs
               containerPort: 2049
