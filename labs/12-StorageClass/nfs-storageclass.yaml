@@ -5,3 +5,4 @@ metadata:
 provisioner: example.com/nfs
 parameters:
   mountOptions: "vers=4.1"
+reclaimPolicy: Delete
