@@ -81,7 +81,7 @@ WARNING: ignoring DaemonSet-managed Pods: kube-system/kube-flannel-ds-amd64-gp2b
 evicting pod "nginx-deployment-68c7f5464c-nxzb5"
 ...
 ```
-This command will retry every 5 second to drain the node without violating the PodDisruptionBudget. To succeed we have to scale up the deployment.
+This command will retry every 5 seconds to drain the node without violating the PodDisruptionBudget. To succeed we have to scale up the deployment.
 Using another shell, scale up the deployment with the following command:
 
 ```console
@@ -89,7 +89,7 @@ $ kubectl scale --replicas=2 deployment/nginx-deployment
 deployment.extensions/nginx-deployment scaled
 ```
 
-As soon as the second pod instance pops up, in the previous terminale the drain command succeed
+As soon as the second pod instance pops up, in the previous terminal the drain command succeed
 
 ```console
 ...
