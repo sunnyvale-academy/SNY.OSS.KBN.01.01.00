@@ -104,7 +104,7 @@ nginx-deployment-68c7f5464c-76cn4   1/1     Running   0          72s   10.244.2.
 nginx-deployment-68c7f5464c-zh64k   1/1     Running   0          77s   10.244.2.141   node2   <none>           <none>
 ```
 
-In this way, the two pods have been scheduled on node2 since node1 has been cordoned (SchedulingDisabled) as a result of the drain.
+In this way, the two pods have been scheduled on node2 since node1 has been cordoned (SchedulingDisabled) as a result of the drain operation.
 
 ```console
 $ kubectl get nodes
@@ -121,6 +121,10 @@ $ kubectl uncordon node1
 node/node1 uncordoned
 ```
 
+Don't forget to clean up after you
 
+```console
+$ kubectl delete -f .
+```
 
 
