@@ -164,5 +164,9 @@ NAME                             DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS
 my-kafka-cluster-with-operator   3                        3
 ```
 
+You can delete the cluster now:
 
-
+```console
+$ kubectl delete kafka my-kafka-cluster-with-operator                 
+kafka.kafka.strimzi.io "my-kafka-cluster-with-operator" deleted
+```
