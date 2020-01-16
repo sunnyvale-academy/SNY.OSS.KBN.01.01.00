@@ -48,7 +48,11 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [21-RBAC](labs/21-RBAC/README.md)
 
-[Google Kubernetes Engine Demo](labs/Google_Kubernetes_Engine_Demo)
+[22-Operator framework](labs/22-Operator_framework/README.md)
+
+[23-Node drain and PodDisruptionBudget](labs/23-Node_drain_and_PodDisruptionBudget/README.md)
+
+[Google Kubernetes Engine Demo](labs/Google_Kubernetes_Engine_Demo/README.md)
 
 ## Appendices
 
