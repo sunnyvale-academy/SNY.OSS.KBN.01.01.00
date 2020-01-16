@@ -79,6 +79,9 @@ $ kubectl drain node1 --ignore-daemonsets --delete-local-data
 node/node1 cordoned
 WARNING: ignoring DaemonSet-managed Pods: kube-system/kube-flannel-ds-amd64-gp2bs, kube-system/kube-proxy-bsg6c
 evicting pod "nginx-deployment-68c7f5464c-nxzb5"
+error when evicting pod "nginx-deployment-68c7f5464c-nxzb5" (will retry after 5s): Cannot evict pod as it would violate the pod's disruption budget.
+evicting pod "nginx-deployment-68c7f5464c-nxzb5"
+error when evicting pod "nginx-deployment-68c7f5464c-nxzb5" (will retry after 5s): Cannot evict pod as it would violate the pod's disruption budget.
 ...
 ```
 This command will retry every 5 seconds to drain the node without violating the PodDisruptionBudget. To succeed we have to scale up the deployment.
