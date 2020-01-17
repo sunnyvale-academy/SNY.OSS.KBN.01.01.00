@@ -54,6 +54,7 @@ A **request** is the amount of that resources that the system will guarantee for
 Below is an example of a pod configuration file with requests and limits set for CPU and memory of two containers in a pod. CPU values are specified in “millicpu” and memory in MiB.
 
 ```yaml
+apiVersion: v1
 kind: Pod
 metadata:
   name: resource-tester-pod
@@ -62,7 +63,8 @@ spec:
   - name: resource-tester
     image: sunnyvale/resource-tester:1.0
     command: 
-      - stress-ng 
+      - stress
+    args:  
       - --vm
       - "1"
       - --vm-bytes 
@@ -97,14 +99,14 @@ resource-tester-pod   16m          40Mi
 
 As you can see, we have verified the following situation:
 
-Pod memory demand (stress argument): 40m
-Pod memory request: 50m
-Pod memory limit: 100m
-Pod memory usage (kubectl top output): 40m
+- Pod memory demand (stress argument): 40m
+- Pod memory request: 50m
+- Pod memory limit: 100m
+- Pod memory usage (kubectl top output): 40m
 
-Pod CPU request: 100m
-Pod CPU limit: 900m
-Pod CPU usage (kubectl top output): 18m
+- Pod CPU request: 100m
+- Pod CPU limit: 900m
+- Pod CPU usage (kubectl top output): 18m
 
 Now let's try to overload the pod memory behind its limit (100Mi) by changing the stress argument (we configure stress to take up to 150m)
 
@@ -124,10 +126,10 @@ resource-tester-pod   0/1     OOMKilled   0          5s
 
 As you can see, we have verified the following situation:
 
-Pod memory demand (stress argument): 150m
-Pod memory request: 50m
-Pod memory limit: 100m
-Pod memory usage (kubectl top output): 0m
+- Pod memory demand (stress argument): 150m
+- Pod memory request: 50m
+- Pod memory limit: 100m
+- Pod memory usage (kubectl top output): 0m
 
 Get a more detailed view of the Container status:
 
