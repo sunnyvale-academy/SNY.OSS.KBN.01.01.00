@@ -54,6 +54,7 @@ A **request** is the amount of that resources that the system will guarantee for
 Below is an example of a pod configuration file with requests and limits set for CPU and memory of two containers in a pod. CPU values are specified in “millicpu” and memory in MiB.
 
 ```yaml
+apiVersion: v1
 kind: Pod
 metadata:
   name: resource-tester-pod
@@ -62,7 +63,8 @@ spec:
   - name: resource-tester
     image: sunnyvale/resource-tester:1.0
     command: 
-      - stress-ng 
+      - stress
+    args:  
       - --vm
       - "1"
       - --vm-bytes 
