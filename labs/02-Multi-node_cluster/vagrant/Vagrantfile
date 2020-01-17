@@ -78,6 +78,7 @@ Vagrant.configure("2") do |config|
       subconfig.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--cpus", "2"]
         vb.customize ["modifyvm", :id, "--memory", "2048"]
+        vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
         vb.name = "master"
       end
       subconfig.vm.provision :shell, inline: $kubemasterscript
@@ -93,6 +94,7 @@ Vagrant.configure("2") do |config|
         subconfig.vm.network :private_network, ip: NODE_IP_NW + "#{i + 10}"
         subconfig.vm.provision :shell, inline: $kubeminionscript
         subconfig.vm.provider :virtualbox do |vb|
+          vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
           vb.name = "node#{i}"
         end
       end
