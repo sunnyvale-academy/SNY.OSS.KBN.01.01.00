@@ -31,7 +31,7 @@ During the reconcile cycle, the controller has the responsibility to check that 
 Install the auxiliary Operator Lifecycle Manager (OLM), a tool to help manage the Operators running on your cluster.
 
 ```console
-$ curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/0.13.0/install.sh
+$ curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/0.13.0/install.sh | bash -s 0.13.0
 customresourcedefinition.apiextensions.k8s.io/clusterserviceversions.operators.coreos.com created
 customresourcedefinition.apiextensions.k8s.io/installplans.operators.coreos.com created
 customresourcedefinition.apiextensions.k8s.io/subscriptions.operators.coreos.com created
