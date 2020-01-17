@@ -10,7 +10,8 @@ $ vagrant plugin install vagrant-vbguest
 $ vagrant plugin install vagrant-reload
 $ vagrant plugin install vagrant-hostmanager
 ```
-If you are have installed the latest versions of Vagrant (2.2.6) and VirtualBox (6.1.x) you can have compatibility problems, to avoid them you can follow this guide: 
+If you installed the latest versions of Vagrant (2.2.6) and VirtualBox (6.1.x) you may face compatibility problems. 
+To avoid them you can follow this guide: 
 https://blogs.oracle.com/scoter/getting-vagrant-226-working-with-virtualbox-61-ga
 
 Provision the environent
