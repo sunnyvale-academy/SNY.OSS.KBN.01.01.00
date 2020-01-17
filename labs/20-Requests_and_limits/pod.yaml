@@ -7,14 +7,15 @@ spec:
   - name: resource-tester
     image: sunnyvale/resource-tester:1.0
     command: 
-      - stress-ng 
-      - -m 
+      - stress
+    args:  
+      - --vm
       - "1"
       - --vm-bytes 
       - "40m"
-      - "--vm-keep"
-      - "-v"
-      - "--oomable"
+      - "--vm-hang"
+      - "1"
+      - -v
     imagePullPolicy: Always
     resources:
       requests:
