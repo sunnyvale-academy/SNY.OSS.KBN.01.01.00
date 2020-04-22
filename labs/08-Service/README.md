@@ -56,12 +56,12 @@ NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE    
 clusterip-service   ClusterIP   10.96.225.222   <none>        8080/TCP   30s     app=nginx
 ```
 
-This means that your Pods are accessible ONLY within the cluster with IP address **10.96.225.222**
+This means that your Pods are accessible ONLY within the cluster with IP address **10.96.225.222** or by its **name**.
 
-To verify it, we spawn a busybox Pod in order to contact the service's IP address from within the Kubernetes cluster.
+To verify it, we spawn a busybox Pod in order to contact the service's name from within the Kubernetes cluster.
 
 ```console
-$ kubectl run -i --rm --tty busybox --image=busybox --restart=Never -- wget -qO- 10.96.225.222:8080 
+$ kubectl run -i --rm --tty busybox --image=busybox --restart=Never -- wget -qO- clusterip-service:8080 
 <!DOCTYPE html>
 <html>
 <head>

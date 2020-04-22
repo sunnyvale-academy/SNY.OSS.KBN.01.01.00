@@ -32,8 +32,8 @@ replicaset.apps/frontend created
 
 Describe the RS
 
-```yaml
-kubectl describe replicaset.apps/frontend                                                                                                   
+```console
+$ kubectl describe replicaset.apps/frontend                                                                                                   
 Name:         frontend
 Namespace:    default
 Selector:     app in (guest-book,guest_book,guestbook),env notin (production)
