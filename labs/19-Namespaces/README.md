@@ -33,7 +33,7 @@ metadata:
 This command is used to create a namespace
 
 ```console
-$ kubectl create –f namespace.yml
+$ kubectl create –f namespace.yaml
 namespace/elk created
 ```
 

@@ -24,7 +24,7 @@ As you can see every node has got its own pod (including master)
 
 
 ```console
-$ kubectl get pod -o wide -n kube-system  
+$ kubectl get pod -o wide -n kube-system  | grep fluent
 ...
 fluentd-59bhm                    1/1     Running   0          18s   10.244.0.22     master   <none>           <none>
 fluentd-ffpqz                    1/1     Running   0          18s   10.244.1.22     node1    <none>           <none>
