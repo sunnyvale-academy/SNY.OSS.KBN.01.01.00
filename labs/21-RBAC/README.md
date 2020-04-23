@@ -155,11 +155,6 @@ deployment.extensions "mydokuwiki" deleted
 ```
 
 ```console
-$ kubectl delete deployment mydokuwiki --namespace office  
-deployment.extensions "mydokuwiki" deleted
-```
-
-```console
 $ kubectl delete -f . 
 rolebinding.rbac.authorization.k8s.io "deployment-manager-binding" deleted
 role.rbac.authorization.k8s.io "deployment-manager" deleted
