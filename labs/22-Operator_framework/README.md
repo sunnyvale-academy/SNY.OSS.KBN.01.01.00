@@ -71,8 +71,8 @@ To check if the operator has been installed successfully, wait until the PHASE c
 
 ```console
 $ kubectl get csv -n operators  
-NAME                               DISPLAY                         VERSION   REPLACES                           PHASE
-strimzi-cluster-operator.v0.14.0   Strimzi Apache Kafka Operator   0.14.0    strimzi-cluster-operator.v0.13.0   Succeeded
+NAME                               DISPLAY   VERSION   REPLACES   PHASE
+strimzi-cluster-operator.v0.17.0   Strimzi   0.17.0               Succeeded
 ```
 
 One or more CRD/s should have been created by the operator 
@@ -146,7 +146,7 @@ metadata:
 spec:
   kafka:
     version: 2.3.0
-    replicas: 3
+    replicas: 1
     ...
 ```
 
@@ -160,7 +160,17 @@ Note that since we installed the operator and its CRDs successfully, we can **ge
 ```console
 $ kubectl get kafka
 NAME                             DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS
-my-kafka-cluster-with-operator   3                        3
+my-kafka-cluster-with-operator   1                        1
+```
+
+Get the Kafka pod list:
+
+```console
+$ kubectl get po
+NAME                                                              READY   STATUS    RESTARTS   AGE
+my-kafka-cluster-with-operator-entity-operator-64ff59fdf8-44dkp   3/3     Running   0          60s
+my-kafka-cluster-with-operator-kafka-0                            2/2     Running   0          90s
+my-kafka-cluster-with-operator-zookeeper-0                        2/2     Running   0          6m9s
 ```
 
 You can delete the cluster now:
