@@ -75,7 +75,7 @@ nginx-pdb                      1               N/A               0              
 If you try to drain the node where the pod is running on (node1 in out example), K8S system prevent you to do so since you would violate the PodDisruptionBudget:
 
 ```console
-$ kubectl drain node1 --ignore-daemonsets --delete-local-data
+$ kubectl drain node1 --ignore-daemonsets --delete-local-data --force       
 node/node1 cordoned
 WARNING: ignoring DaemonSet-managed Pods: kube-system/kube-flannel-ds-amd64-gp2bs, kube-system/kube-proxy-bsg6c
 evicting pod "nginx-deployment-68c7f5464c-nxzb5"
