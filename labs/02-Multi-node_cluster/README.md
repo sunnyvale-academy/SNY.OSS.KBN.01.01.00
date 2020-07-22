@@ -24,7 +24,7 @@ vagrant$ vagrant up
 Test the environment
 
 ```console
-vagrant$ export KUBECONFIG=kubeconfig.yaml
+vagrant$ export KUBECONFIG=$(pwd)/kubeconfig.yaml
 vagrant$ kubectl get nodes
 
 NAME     STATUS   ROLES    AGE   VERSION
