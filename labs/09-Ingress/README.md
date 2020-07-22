@@ -1,5 +1,7 @@
 # Ingress
 
+![An ingress](img/wMIM6.png)
+
 Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
 
 ```console
