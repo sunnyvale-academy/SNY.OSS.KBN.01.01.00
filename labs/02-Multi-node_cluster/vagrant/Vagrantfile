@@ -42,6 +42,7 @@ sudo chmod 755 /shared
 sudo echo "/shared 192.168.26.0/24(rw,no_root_squash)" >> /etc/exports
 sudo exportfs -a
 sudo service nfs-kernel-server restart
+sudo systemctl unmask idmapd
 sudo service idmapd restart 
 
 # Dashboard installation

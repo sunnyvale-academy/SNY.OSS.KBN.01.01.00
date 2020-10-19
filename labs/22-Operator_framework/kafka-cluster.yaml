@@ -4,7 +4,7 @@ metadata:
   name: my-kafka-cluster-with-operator
 spec:
   kafka:
-    version: 2.3.1
+    version: 2.5.0
     replicas: 1
     listeners:
       plain: {}
