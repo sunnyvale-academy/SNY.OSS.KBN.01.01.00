@@ -8,5 +8,5 @@ min_count          = 1
 max_count          = 3
 disk_size_gb       = 10
 service_account    = "terraform1@sny-prg-dvs-01-01-00.iam.gserviceaccount.com"
-initial_node_count = 2
+initial_node_count = 1
 
