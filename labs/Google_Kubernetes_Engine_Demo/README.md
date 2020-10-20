@@ -246,8 +246,8 @@ NAME             TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)        A
 db               ClusterIP      10.89.10.162   <none>           5432/TCP       16m
 kubernetes       ClusterIP      10.89.0.1      <none>           443/TCP        64m
 redis            ClusterIP      10.89.15.78    <none>           6379/TCP       16m
-result-service   LoadBalancer   10.89.4.191    34.90.157.102    80:32064/TCP   16m
-voting-service   LoadBalancer   10.89.4.19     35.204.214.174   80:32599/TCP   16m
+result           LoadBalancer   10.89.4.191    34.90.157.102    80:32064/TCP   16m
+voting           LoadBalancer   10.89.4.19     35.204.214.174   80:32599/TCP   16m
 ```
 
 In this example, you will point your browser to http://35.204.214.174.
