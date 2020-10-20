@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: db
+  name: db
+  namespace: vote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - image: postgres:latest
+        name: postgres
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: PGDATA
+          valueFrom:
+            configMapKeyRef:
+              name: db-configmap
+              key: pgdata
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: db-data
+        - mountPath: /opt/postgres
+          name: db-configmap
+          readOnly: true
+        args: ['-c', 'hba_file=/opt/postgres/pg_hba.conf']
+      volumes:
+      - name: db-data
+        emptyDir: {} 
+      - name: db-configmap
+        configMap:
+          name: db-configmap 
+          items:
+            - key: pg_hba.conf
+              path: pg_hba.conf

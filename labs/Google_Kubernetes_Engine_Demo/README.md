@@ -202,6 +202,18 @@ gke-demo-gke-cluster-default-node-poo-95a3edf1-tp4r   Ready    <none>   20m   v1
 
 ## Application deployment
 
+We will install on K8S a cloud native application with this architecture
+
+![](img/architecture.png)
+
+
+Create a dedicated K8S namespace
+
+```console
+$ kubectl create namespace vote
+namespace/vote created
+```
+
 Move to the **app** folder
 
 ```console
@@ -211,7 +223,16 @@ $ cd <GIT_REPO_HOME>/labs/Google_Kubernetes_Engine_Demo/app
 Apply all the resources declared in the **app.yml** file
 
 ```console
-$ kubectl apply -f app.yml
+$ kubectl apply -f .
+deployment.apps/db created
+service/db created
+deployment.apps/redis created
+service/redis created
+deployment.apps/result created
+service/result created
+deployment.apps/vote created
+service/vote created
+deployment.apps/worker created
 ...
 ```
 

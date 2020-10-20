@@ -1,6 +1,6 @@
 module "gke" {
   source                     = "terraform-google-modules/kubernetes-engine/google"
-  version                    = "5.0.0"
+  version                    = "12.0.0"
   project_id                 = var.project_id
   region                     = var.region
   zones                      = var.zones
@@ -9,18 +9,19 @@ module "gke" {
   subnetwork                 = "default"
   ip_range_pods              = ""
   ip_range_services          = ""
-  http_load_balancing        = true
+  http_load_balancing        = false
   horizontal_pod_autoscaling = true
-  kubernetes_dashboard       = true
   network_policy             = true
   // kubernetes_version         = ""
 
-  node_pools = [
+    node_pools = [
     {
-      name               = "default-node-pool"
+      name               = var.name
       machine_type       = var.machine_type
+      node_locations     = "europe-west4-b,europe-west4-c"
       min_count          = var.min_count
       max_count          = var.max_count
+      local_ssd_count    = 0
       disk_size_gb       = var.disk_size_gb
       disk_type          = "pd-standard"
       image_type         = "COS"
@@ -29,7 +30,7 @@ module "gke" {
       service_account    = var.service_account
       preemptible        = false
       initial_node_count = var.initial_node_count
-    },
+    }
   ]
 
   node_pools_oauth_scopes = {
@@ -56,7 +57,17 @@ module "gke" {
     }
   }
 
-  
+  node_pools_taints = {
+    all = []
+
+    default-node-pool = [
+      {
+        key    = "default-node-pool"
+        value  = true
+        effect = "PREFER_NO_SCHEDULE"
+      },
+    ]
+  }
 
   node_pools_tags = {
     all = []
