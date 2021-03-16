@@ -1,4 +1,4 @@
-BOX_IMAGE = "ubuntu/xenial64"
+BOX_IMAGE = "generic/ubuntu1604"
 SETUP_MASTER = true
 SETUP_NODES = true
 NODE_COUNT = 2
@@ -11,6 +11,7 @@ POD_NW_CIDR = "10.244.0.0/16"
 KUBETOKEN = "b029ee.968a33e8d8e6bb0d"
 
 $kubeminionscript = <<MINIONSCRIPT
+sudo swapoff -a
 kubeadm reset -f
 kubeadm join --discovery-token-unsafe-skip-ca-verification --token #{KUBETOKEN} #{MASTER_IP}:6443
 
@@ -21,7 +22,7 @@ sudo mount -a
 MINIONSCRIPT
 
 $kubemasterscript = <<SCRIPT
-
+sudo swapoff -a
 kubeadm reset -f
 kubeadm init --kubernetes-version v1.15.3 --apiserver-advertise-address=#{MASTER_IP} --pod-network-cidr=#{POD_NW_CIDR} --token #{KUBETOKEN} --token-ttl 0
 mkdir -p $HOME/.kube
@@ -40,13 +41,13 @@ sudo apt-get install -y nfs-kernel-server
 sudo mkdir /shared
 sudo chmod 755 /shared
 sudo echo "/shared 192.168.26.0/24(rw,no_root_squash)" >> /etc/exports
+sudo systemctl unmask idmapd
 sudo exportfs -a
 sudo service nfs-kernel-server restart
-sudo systemctl unmask idmapd
 sudo service idmapd restart 
 
 # Dashboard installation
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta4/aio/deploy/recommended.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 kubectl create clusterrolebinding dashboard-admin-sa --clusterrole=cluster-admin --serviceaccount=default:dashboard-admin-sa
 kubectl create serviceaccount dashboard-admin-sa
 kubectl config set-credentials kubernetes-admin --token="$(kubectl -n default describe secret dashboard-admin-sa | awk '$1=="token:"{print $2}')"
