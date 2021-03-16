@@ -83,6 +83,7 @@ Vagrant.configure("2") do |config|
         vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
         vb.name = "master"
       end
+      subconfig.vm.synced_folder ".", "/vagrant", disabled: false
       subconfig.vm.provision :shell, inline: $kubemasterscript
       subconfig.vm.provision :shell, :path => "scripts/install_on_cluster.sh"
       subconfig.vm.synced_folder "../../..", "/usr/src/git_repo"
@@ -93,6 +94,7 @@ Vagrant.configure("2") do |config|
     (1..NODE_COUNT).each do |i|
       config.vm.define "node#{i}" do |subconfig|
         subconfig.vm.hostname = "node#{i}"
+        subconfig.vm.synced_folder ".", "/vagrant", disabled: false
         subconfig.vm.network :private_network, ip: NODE_IP_NW + "#{i + 10}"
         subconfig.vm.provision :shell, inline: $kubeminionscript
         subconfig.vm.provider :virtualbox do |vb|
