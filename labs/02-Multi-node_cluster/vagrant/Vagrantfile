@@ -19,6 +19,9 @@ sudo apt-get install -y nfs-common
 sudo echo "192.168.26.10:/   /mnt   nfs4    _netdev,auto  0  0" >> /etc/fstab
 sudo mount -a
 
+# Disable swap permanently
+sudo sed -i '/ swap / s/^/#/' /etc/fstab
+
 MINIONSCRIPT
 
 $kubemasterscript = <<SCRIPT
@@ -32,7 +35,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # Flannel installation
 sudo sysctl net.bridge.bridge-nf-call-iptables=1
-kubectl apply -f /vagrant/kube-flannel.yml
+kubectl apply -f /vagrant/kube-flannel_kvm.yml
 
 # Share NFS
 sudo mkdir -p /storage/dynamic
@@ -51,6 +54,9 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/a
 kubectl create clusterrolebinding dashboard-admin-sa --clusterrole=cluster-admin --serviceaccount=default:dashboard-admin-sa
 kubectl create serviceaccount dashboard-admin-sa
 kubectl config set-credentials kubernetes-admin --token="$(kubectl -n default describe secret dashboard-admin-sa | awk '$1=="token:"{print $2}')"
+
+# Disable swap permanently
+sudo sed -i '/ swap / s/^/#/' /etc/fstab
 
 cp $HOME/.kube/config /vagrant/kubeconfig.yaml
 
@@ -86,7 +92,7 @@ Vagrant.configure("2") do |config|
       subconfig.vm.synced_folder ".", "/vagrant", type: "nfs", disabled: false
       subconfig.vm.provision :shell, inline: $kubemasterscript
       subconfig.vm.provision :shell, :path => "scripts/install_on_cluster.sh"
-      subconfig.vm.synced_folder "../../..", "/usr/src/git_repo"
+      subconfig.vm.synced_folder "../../..", "/usr/src/git_repo", type: "nfs"
     end
   end
   
@@ -94,7 +100,7 @@ Vagrant.configure("2") do |config|
     (1..NODE_COUNT).each do |i|
       config.vm.define "node#{i}" do |subconfig|
         subconfig.vm.hostname = "node#{i}"
-        #subconfig.vm.synced_folder ".", "/vagrant", disabled: false
+        subconfig.vm.synced_folder ".", "/vagrant", type: "nfs", disabled: false
         subconfig.vm.network :private_network, ip: NODE_IP_NW + "#{i + 10}"
         subconfig.vm.provision :shell, inline: $kubeminionscript
         subconfig.vm.provider :virtualbox do |vb|
