@@ -8,9 +8,9 @@ spec:
   - ReadWriteMany      
   resources:
      limits:
-       storage: 1Gi
+       storage: 5Gi
      requests:
-       storage: 1Gi 
+       storage: 5Gi 
  # The selector field defines all labels necessary in a PV in order to match this claim
   selector: 
     matchLabels:
