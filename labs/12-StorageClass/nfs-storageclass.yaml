@@ -2,8 +2,8 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: nfs-dynamic
-  annotations: 
-    storageclass.kubernetes.io/is-default-class: true
+  #annotations: 
+  #  storageclass.kubernetes.io/is-default-class: true
 provisioner: example.com/nfs
 parameters:
   mountOptions: "vers=4.1"
