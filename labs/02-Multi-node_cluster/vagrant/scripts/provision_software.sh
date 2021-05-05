@@ -9,7 +9,7 @@ EOF
 echo "KUBELET_EXTRA_ARGS=--cgroup-driver=systemd" > /etc/default/kubelet
 
 apt-get update
-apt-get install -y containerd=1.2.6-0ubuntu1~16.04.4 docker.io=18.09.7-0ubuntu1~16.04.6 kubelet=1.15.4-00 kubeadm=1.15.4-00 kubectl=1.15.4-00 kubernetes-cni
+apt-get install -y containerd=1.2.6-0ubuntu1~16.04.4 docker.io=18.09.7-0ubuntu1~16.04.6 kubelet=1.16.14-00 kubeadm=1.16.14-00 kubectl=1.16.14-00 kubernetes-cni
 systemctl enable kubelet && systemctl start kubelet
 
 cat > /etc/docker/daemon.json <<EOF
