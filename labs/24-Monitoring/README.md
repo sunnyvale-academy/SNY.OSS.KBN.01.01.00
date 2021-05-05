@@ -149,4 +149,101 @@ As you can see in the diagram above, the ServiceMonitor targets Kubernetes servi
 
 We already have a Prometheus deployment monitoring all the Kubernetes internal metrics (kube-state-metrics, node-exporter, Kubernetes API, etc) but now we need a separate deployment to take care of any other application running on top of the cluster.
 
-In order to do this new deployment, first let’s take a look at this Prometheus CRD before applying it to the cluster (you can find this file in the repository as shown below):
+In order to do this new deployment, first let’s take a look at this Prometheus CRD before applying it to the cluster (you can find this file in the repository [here](prometheus.yaml))
+
+In this Prometheus server configuration file we can find:
+
+- The number of Prometheus replicas using this config (1)
+- The ruleSelector that will dynamically configure alerting rules
+- The Alertmanager deployment (could be more than one pod for redundancy) that will receive the triggered alerts
+- The **serviceMonitorSelector**, this is, the filter that will decide if a given serviceMonitor will be used to configure this Prometheus server.
+
+For this example we have decided that a serviceMonitor will be associated with this Prometheus deployment if it contains the label **serviceapp** in its metadata.
+
+```console
+$ kubectl apply -f prometheus.yaml
+prometheus.monitoring.coreos.com/service-prometheus created
+service/service-prometheus-svc created
+```
+
+Let's see if we can spot the newly created Prometheus instance (service-prometheus )
+
+
+```console
+$ kubectl get prometheus -n monitoring 
+NAME                                    VERSION   REPLICAS   AGE
+prometheus-kube-prometheus-prometheus   v2.26.0   1          8h
+service-prometheus                                1          69s
+```
+
+Let's see if this new Prometheus instance is available using a new port-forward
+
+```console
+$ kubectl port-forward svc/service-prometheus-svc --address 0.0.0.0 -n monitoring 9191:9090
+Forwarding from 0.0.0.0:9191 -> 9090
+```
+
+If you connect to this new Prometheus instance on your computer (in most cases http://localhost:9191), you notice that we don’t have any metrics target yet. 
+
+![Prometheus Home](img/7.png)
+
+We need a service to scrape: CoreDNS is a fast and flexible DNS server that exposes Prometheus metrics out of the box (using port 9153), we will use it for testing ServiceMonitors.
+
+```console
+$ helm repo add coredns https://coredns.github.io/helm
+"coredns" has been added to your repositories
+```
+
+```console
+$ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "coredns" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+Update Complete. ⎈Happy Helming!⎈
+```
+
+```console
+$ helm install coredns --namespace=coredns coredns/coredns --create-namespace --set prometheus.service.enabled=true
+NAME: coredns
+LAST DEPLOYED: Wed May  5 22:30:56 2021
+NAMESPACE: coredns
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+CoreDNS is now running in the cluster as a cluster-service.
+
+It can be tested with the following:
+
+1. Launch a Pod with DNS tools:
+
+kubectl run -it --rm --restart=Never --image=infoblox/dnstools:latest dnstools
+
+2. Query the DNS server:
+
+/ # host kubernetes
+```
+
+CoreDNS expose its metrics at port 9153
+
+```
+$ kubectl get svc -n coredns
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
+coredns-coredns           ClusterIP   10.108.222.137   <none>        53/UDP,53/TCP   3s
+coredns-coredns-metrics   ClusterIP   10.105.181.229   <none>        9153/TCP        3s
+```
+
+Let's apply the [ServiceMonitor](coredns-servicemonitor.yaml)
+
+```
+$ kubectl apply -f coredns-servicemonitor.yaml 
+servicemonitor.monitoring.coreos.com/coredns-servicemonitor created
+```
+
+If you go back to our new Prometheus instance GUI after a few minutes (using port-forward on port 9191->9090), you should see a new target being monitored (our CoreDNS instance)
+
+![Prometheus Target](img/8.png)
+
+And metrics should have popped out as well
+
+![Prometheus Metrics](img/9.png)
