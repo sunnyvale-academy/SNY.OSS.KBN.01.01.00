@@ -86,7 +86,7 @@ Try connecting to Grafana to see the build-in dashboards. To do so, open a port-
 
 ```console
 $ kubectl port-forward svc/prometheus-grafana --address 0.0.0.0 -n monitoring 3000:80
-Forwarding from 0.0.0.0:3000 -> 3000
+Forwarding from 0.0.0.0:3000 -> 80
 ```
 
 Now, pointing your browser to your computer on port 3000 you should access to Grafana (in most cases http://localhost:3000).
@@ -147,45 +147,7 @@ If there is a new metrics endpoint that matches the ServiceMonitor criteria, thi
 
 As you can see in the diagram above, the ServiceMonitor targets Kubernetes services, not the endpoints directly exposed by the pod(s).
 
-We already have a Prometheus deployment monitoring all the Kubernetes internal metrics (kube-state-metrics, node-exporter, Kubernetes API, etc) but now we need a separate deployment to take care of any other application running on top of the cluster.
-
-In order to do this new deployment, first let’s take a look at this Prometheus CRD before applying it to the cluster (you can find this file in the repository [here](prometheus.yaml))
-
-In this Prometheus server configuration file we can find:
-
-- The number of Prometheus replicas using this config (1)
-- The ruleSelector that will dynamically configure alerting rules
-- The Alertmanager deployment (could be more than one pod for redundancy) that will receive the triggered alerts
-- The **serviceMonitorSelector**, this is, the filter that will decide if a given serviceMonitor will be used to configure this Prometheus server.
-
-For this example we have decided that a serviceMonitor will be associated with this Prometheus deployment if it contains the label **serviceapp** in its metadata.
-
-```console
-$ kubectl apply -f prometheus.yaml
-prometheus.monitoring.coreos.com/service-prometheus created
-service/service-prometheus-svc created
-```
-
-Let's see if we can spot the newly created Prometheus instance (service-prometheus )
-
-
-```console
-$ kubectl get prometheus -n monitoring 
-NAME                                    VERSION   REPLICAS   AGE
-prometheus-kube-prometheus-prometheus   v2.26.0   1          8h
-service-prometheus                                1          69s
-```
-
-Let's see if this new Prometheus instance is available using a new port-forward
-
-```console
-$ kubectl port-forward svc/service-prometheus-svc --address 0.0.0.0 -n monitoring 9191:9090
-Forwarding from 0.0.0.0:9191 -> 9090
-```
-
-If you connect to this new Prometheus instance on your computer (in most cases http://localhost:9191), you notice that we don’t have any metrics target yet. 
-
-![Prometheus Home](img/7.png)
+We already have a Prometheus deployment monitoring all the Kubernetes internal metrics (kube-state-metrics, node-exporter, Kubernetes API, etc) and we want to use the same to monitor also our applications.
 
 We need a service to scrape: CoreDNS is a fast and flexible DNS server that exposes Prometheus metrics out of the box (using port 9153), we will use it for testing ServiceMonitors.
 
@@ -240,10 +202,10 @@ $ kubectl apply -f coredns-servicemonitor.yaml
 servicemonitor.monitoring.coreos.com/coredns-servicemonitor created
 ```
 
-If you go back to our new Prometheus instance GUI after a few minutes (using port-forward on port 9191->9090), you should see a new target being monitored (our CoreDNS instance)
+If you go back to our Prometheus instance GUI after a few minutes lates (using port-forward on port 9090->9090), you should see a new target being monitored (our CoreDNS instance)
 
-![Prometheus Target](img/8.png)
+![Prometheus Target](img/7.png)
 
 And metrics should have popped out as well
 
-![Prometheus Metrics](img/9.png)
+![Prometheus Metrics](img/8.png)

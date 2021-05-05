@@ -3,6 +3,7 @@ kind: ServiceMonitor
 metadata:
   labels:
     serviceapp: coredns-servicemonitor
+    release: prometheus
   name: coredns-servicemonitor
   namespace: monitoring
 spec:
