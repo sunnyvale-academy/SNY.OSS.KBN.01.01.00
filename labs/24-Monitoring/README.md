@@ -209,3 +209,31 @@ If you go back to our Prometheus instance GUI after a few minutes lates (using p
 And metrics should have popped out as well
 
 ![Prometheus Metrics](img/8.png)
+
+## Prometheus Operator – How to configure Alert Rules
+
+In the existing Prometheus deployment there is a configuration block to filter and match these objects:
+
+```yaml
+ruleSelector:
+      matchLabels:
+        app: kube-prometheus-stack
+        release: prometheus
+```
+
+If you define an object containing the PromQL rules you desire and matching the desired metadata, they will be automatically added to the Prometheus servers’ configuration.
+
+This object is described in [dead-man-switch-rule.yaml](dead-man-switch-rule.yaml), let's apply it.
+
+```
+$ kubectl apply -f dead-man-switch-rule.yaml
+servicemonitor.monitoring.coreos.com/coredns-servicemonitor created
+```
+
+As soon as you apply the rule file, a new rule is being discovered by Prometheus
+
+![Rule](img/9.png)
+
+And since this was an always-firing rule, after a couple of minutes we should see also an alert being triggered:
+
+![Alert](img/10.png)
