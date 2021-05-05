@@ -119,3 +119,34 @@ Forwarding from 0.0.0.0:9090 -> 9090
 Now, point your browser to your computer on port 9093,  you should access to Alert Manager GUI (in most cases http://localhost:9093).
 
 ![Prometheus Home](img/6.png)
+
+## Prometheus Operator endpoint to scrape autoconfiguration
+
+Next step is to build upon this configuration to start monitoring any other services deployed in your cluster.
+
+There are two custom resources involved in this process:
+
+- The Prometheus CRD
+  - Defines Prometheus server pod metadata
+  - Defines # of Prometheus server replicas
+  - Defines Alertmanager(s) endpoint to send triggered alert rules
+  - Defines labels and namespace filters for the 
+    - ServiceMonitor CRDs that will be applied by this Prometheus server deployment
+
+- The ServiceMonitor objects will provide the dynamic target endpoint configuration
+  - The ServiceMonitor CRD
+  - Filters endpoints by namespace, labels, etc
+  - Defines the different scraping ports
+  - Defines all the additional scraping parameters like scraping interval, protocol to use, TLS credentials, re-labeling policies, etc.
+
+The Prometheus object filters and selects N ServiceMonitor objects, which in turn, filter and select N Prometheus metrics endpoints.
+
+If there is a new metrics endpoint that matches the ServiceMonitor criteria, this target will be automatically added to all the Prometheus servers that select that ServiceMonitor.
+
+![Service Monitors](img/prometheus_operator_servicemonitor.png)
+
+As you can see in the diagram above, the ServiceMonitor targets Kubernetes services, not the endpoints directly exposed by the pod(s).
+
+We already have a Prometheus deployment monitoring all the Kubernetes internal metrics (kube-state-metrics, node-exporter, Kubernetes API, etc) but now we need a separate deployment to take care of any other application running on top of the cluster.
+
+In order to do this new deployment, first let’s take a look at this Prometheus CRD before applying it to the cluster (you can find this file in the repository as shown below):
