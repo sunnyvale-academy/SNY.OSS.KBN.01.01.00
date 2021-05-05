@@ -26,6 +26,8 @@ Other than `kubectl`, you need `helm` installed on your computer in order to dep
 pre-configured to collect metrics from all Kubernetes component
 delivers a default set of dashboards and alerting rules.
 
+![Prom operator](img/kube-prom-op-stack.png)
+
 Just before to install **kube-prometheus-stack**, create a dedicated namespace:
 
 ```console
@@ -94,14 +96,26 @@ Now, pointing your browser to your computer on port 3000 you should access to Gr
 
 ![Grafana Home](img/1.png)
 
-![Grafana Home](img/2.png)
+![Grafana Graph](img/2.png)
 
-## Cleanup
-
-Don't forget to clean up after you
+In the same way (thanks to a port forward) you can visit the prometheus GUI pointing your browser to your computer on port 9090 (in most cases http://localhost:9090).
 
 ```console
-$ helm delete prometheus -n monitoring
+$ kubectl port-forward svc/prometheus-kube-prometheus-prometheus --address 0.0.0.0 -n monitoring 9090:9090
+Forwarding from 0.0.0.0:9090 -> 9090
 ```
 
+![Prometheus Home](img/4.png)
 
+![Prometheus Graph](img/5.png)
+
+And Alert Manager as well
+
+```console
+$ kubectl port-forward svc/prometheus-kube-prometheus-alertmanager --address 0.0.0.0 -n monitoring 9093:9093
+Forwarding from 0.0.0.0:9090 -> 9090
+```
+
+Now, point your browser to your computer on port 9093,  you should access to Alert Manager GUI (in most cases http://localhost:9093).
+
+![Prometheus Home](img/6.png)
