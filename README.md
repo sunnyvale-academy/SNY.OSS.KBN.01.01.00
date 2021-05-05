@@ -52,6 +52,8 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [23-Node drain and PodDisruptionBudget](labs/23-Node_drain_and_PodDisruptionBudget/README.md)
 
+[24-Monitoring](labs/24-Monitoring/README.md)
+
 [Google Kubernetes Engine Demo](labs/Google_Kubernetes_Engine_Demo/README.md)
 
 ## Appendices
