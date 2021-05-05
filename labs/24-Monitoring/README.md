@@ -80,12 +80,28 @@ prometheus-prometheus-node-exporter-c5lkc                1/1     Running   0    
 prometheus-prometheus-node-exporter-k5959                1/1     Running   0          47s
 ```
 
+Try connecting to Grafana to see the build-in dashboards. To do so, open a port-forward point to the Grafana service
 
+```console
+$ kubectl port-forward svc/prometheus-grafana --address 0.0.0.0 -n monitoring 3000:80
+Forwarding from 0.0.0.0:3000 -> 3000
+```
+
+Now, pointing your browser to your computer on port 3000 you should access to Grafana (in most cases http://localhost:3000).
+
+- Username: admin
+- Password: prom-operator
+
+![Grafana Home](img/1.png)
+
+![Grafana Home](img/2.png)
+
+## Cleanup
 
 Don't forget to clean up after you
 
 ```console
-$ kubectl delete -f .
+$ helm delete prometheus -n monitoring
 ```
 
 
