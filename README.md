@@ -54,6 +54,8 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [24-Monitoring](labs/24-Monitoring/README.md)
 
+[25-Horizontal pod autoscaler](labs/24-Horizontal_pod_autoscaler/README.md)
+
 [Google Kubernetes Engine Demo](labs/Google_Kubernetes_Engine_Demo/README.md)
 
 ## Appendices
