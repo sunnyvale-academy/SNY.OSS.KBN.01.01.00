@@ -124,6 +124,7 @@ php-apache   Deployment/php-apache/scale   0% / 50%     1         10        1   
 
 then
 
+```
 $ kubectl get deployment php-apache
 NAME         READY   UP-TO-DATE   AVAILABLE   AGE
 php-apache   1/1     1            1           27m
