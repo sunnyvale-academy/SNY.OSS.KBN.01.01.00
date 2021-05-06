@@ -138,4 +138,7 @@ Don't forget to clean up after you
 
 ```console
 $ kubectl delete -f .
+deployment.apps "php-apache" deleted
+service "php-apache" deleted
+horizontalpodautoscaler.autoscaling "test-hpa" deleted
 ```
