@@ -1,6 +1,18 @@
 # Horizontal pod autoscaler
 
-The Horizontal Pod Autoscaler automatically scales the number of Pods in a replication controller, deployment, replica set or stateful set based on observed CPU utilization and memory consumption (or, with custom metrics support, on some other application-provided metrics).
+## Prerequisites
+
+Before using **kubectl**, please set the **KUBECONFIG** environment variable to point to the right kubeconfig file.
+
+```console
+$ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
+```
+
+To run the second part of this lab you must have deployed the monitoring framework as described in lab [24-Monitoring](../24-Monitoring/README.md)
+
+## The HPA
+
+The Horizontal Pod Autoscaler (HPA) automatically scales the number of Pods in a replication controller, deployment, replica set or stateful set based on observed CPU utilization and memory consumption (or, with custom metrics support, on some other application-provided metrics).
 
 The Horizontal Pod Autoscaler is implemented as a Kubernetes API resource and a controller. The resource determines the behavior of the controller. The controller periodically adjusts the number of replicas in a replication controller or deployment to match the observed metrics such as average CPU utilisation, average memory utilisation or any other custom metric to the target specified by the user.
 
@@ -132,6 +144,78 @@ php-apache   1/1     1            1           27m
 
 Here CPU utilization dropped to 0, and so HPA autoscaled the number of replicas back down to 1 (autoscaling the replicas may take a few minutes).
 
+## Use HPA with custom metrics (Prometheus)
+
+NB: Prometheus stack is required in order to perform this lab. Please refer to lab [24-Monitoring](../24-Monitoring/README.md).
+
+Custom Metrics API make it possible for monitoring systems like Prometheus to expose application-specific metrics to the HPA controller.
+
+In order to scale based on custom metrics we need to have two components:
+
+- One that collects metrics from our applications and stores them to Prometheus time series database.
+
+- The second one that extends the Kubernetes Custom Metrics API with the metrics supplied by a collector, the k8s-prometheus-adapter. This is an implementation of the custom metrics API that attempts to support arbitrary metrics.
+
+![HPA Custom Metrics API](img/hpa_cust_metrics.jpeg)
+
+First of all, let's deploy a testing application that exposes Prometheus metrics:
+
+```console
+$ kubectl apply -f test_app.yaml
+deployment.apps/prometheus-metric-tester created
+service/prometheus-metric-tester created
+```
+
+This application is made for testing Prometheus metrics; it exposes a special metric named `value_gauge` whose value can bhe set using a REST API.
+
+To scrape the metric's initial value:
+
+```
+$ curl -s http://localhost:8102/metric-test/actuator/prometheus | egrep ^value_gauge
+value_gauge{application="micrometer-testing",} 0.0
+```
+
+To set a custom value:
+
+```
+$ curl -vvv \
+    -X POST \
+    -H "Content-Type: application/json" \
+    --data '{"value":"5"}' \
+    localhost:8102/metric-test/api/v2/updateValue
+```
+
+In order to let Prometheus scrape our test application's metrics, let's apply its [service monitor](test_app-servicemonitor.yaml) as well:
+
+```console
+$ kubectl apply -f test_app-servicemonitor.yaml
+servicemonitor.monitoring.coreos.com/prometheus-metric-tester-servicemonitor created
+```
+
+Open a port-forward to see if Prometheus discovered the new target a started scraping metrics from it:
+
+```
+$ kubectl port-forward svc/prometheus-kube-prometheus-prometheus --address 0.0.0.0 -n monitoring 9090:9090
+```
+
+
+
+To see the new value exposed by the metric:
+
+```
+$ curl -s http://localhost:8102/metric-test/actuator/prometheus | egrep ^value_gauge
+value_gauge{application="micrometer-testing",} 5.0
+```
+
+
+
+Install the Prometheus adapter:
+
+```
+$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+```
+
 ## Clean up
 
 Don't forget to clean up after you
@@ -141,4 +225,10 @@ $ kubectl delete -f .
 deployment.apps "php-apache" deleted
 service "php-apache" deleted
 horizontalpodautoscaler.autoscaling "test-hpa" deleted
+```
+
+If you want to clean-up also the monitoring framework installed during lab [24-Monitoring](../24-Monitoring/README.md):
+
+```console
+$ helm uninstall prometheus -n monitoring
 ```

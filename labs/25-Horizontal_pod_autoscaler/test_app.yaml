@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-metric-tester
+spec:
+  selector:
+    matchLabels:
+      app: prometheus-metric-tester
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: prometheus-metric-tester
+    spec:
+      containers:
+      - name: prometheus-metric-tester
+        image: sunnyvale/prometheus-metric-tester
+        ports:
+        - containerPort: 8102
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-metric-tester
+  labels:
+    app: prometheus-metric-tester
+spec:
+  type: NodePort
+  ports:
+  - port: 8102
+  selector:
+    app: prometheus-metric-tester
