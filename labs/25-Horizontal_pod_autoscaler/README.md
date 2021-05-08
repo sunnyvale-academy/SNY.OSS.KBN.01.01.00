@@ -168,21 +168,36 @@ service/prometheus-metric-tester created
 
 This application is made for testing Prometheus metrics; it exposes a special metric named `value_gauge` whose value can bhe set using a REST API.
 
-To scrape the metric's initial value:
+To test scraping the metric's initial value:
 
 ```
-$ curl -s http://localhost:8102/metric-test/actuator/prometheus | egrep ^value_gauge
+$ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
+  curl \
+  -s \
+  http://prometheus-metric-tester:8102/metric-test/actuator/prometheus/ | egrep ^value_gauge
 value_gauge{application="micrometer-testing",} 0.0
 ```
 
 To set a custom value:
 
 ```
-$ curl -vvv \
+$ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
+    curl \
+    -s \
     -X POST \
     -H "Content-Type: application/json" \
     --data '{"value":"5"}' \
-    localhost:8102/metric-test/api/v2/updateValue
+    prometheus-metric-tester:8102/metric-test/api/v2/updateValue
+```
+
+To verify the new value exposed by the metric:
+
+```
+$ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
+  curl \
+  -s \
+  http://prometheus-metric-tester:8102/metric-test/actuator/prometheus/ | egrep ^value_gauge
+value_gauge{application="micrometer-testing",} 5.0
 ```
 
 In order to let Prometheus scrape our test application's metrics, let's apply its [service monitor](test_app-servicemonitor.yaml) as well:
@@ -198,18 +213,11 @@ Open a port-forward to see if Prometheus discovered the new target a started scr
 $ kubectl port-forward svc/prometheus-kube-prometheus-prometheus --address 0.0.0.0 -n monitoring 9090:9090
 ```
 
+Now verify that Prometheus started scraping the new target and the new value (5.0) is acually seen using the GUI
 
+![Prom new value](img/prom_value_5.png)
 
-To see the new value exposed by the metric:
-
-```
-$ curl -s http://localhost:8102/metric-test/actuator/prometheus | egrep ^value_gauge
-value_gauge{application="micrometer-testing",} 5.0
-```
-
-
-
-Install the Prometheus adapter:
+To be able to use this metric to scale the application, the Prometheus adapter must be installed:
 
 ```
 $ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts

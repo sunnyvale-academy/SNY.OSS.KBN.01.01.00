@@ -1,0 +1,15 @@
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: test-app-cm
+data:
+  hazelcast.yaml: |
+    hazelcast:
+      network:
+        join:
+          multicast:
+            enabled: fase
+          kubernetes:
+            enabled: true
+            namespace: default
+            service-name: prometheus-metric-tester-hazelcast-service
