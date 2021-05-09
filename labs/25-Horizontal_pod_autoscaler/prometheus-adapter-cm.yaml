@@ -12,4 +12,4 @@ data:
       name:
         matches: ^(.*)
         as: "metric_tester_custom_metric_avg"
-      metricsQuery: 'sum(value_gauge{}) / count(value_gauge)'
+      metricsQuery: 'sum(value_gauge) / count(value_gauge)'

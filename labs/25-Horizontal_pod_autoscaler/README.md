@@ -257,8 +257,10 @@ After a couple of minutes, you can check if the adapter is running by executing:
 
 ```console
 $ kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1
-{"kind":"APIResourceList","apiVersion":"v1","groupVersion":"custom.metrics.k8s.io/v1beta1","resources":[]}
+...
 ```
+
+You should see a long JSON flowing on the screen after this command.
 
 Apply the Prometheus Adapter config map
 
@@ -267,6 +269,54 @@ $ kubectl apply -f prometheus-adapter-cm.yaml
 configmap/prometheus-adapter configured
 ```
 
+At this point restart the Prometheus Adapter
+
+```console
+$ kubectl scale --replicas=0 deploy prometheus-adapter -n monitoring && kubectl scale --replicas=1 deploy prometheus-adapter -n monitoring 
+deployment.apps/prometheus-adapter scaled
+deployment.apps/prometheus-adapter scaled
+```
+
+After a few minutes, you should get your metric from the adapter
+
+```console
+$ kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/value_gauge" | jq .
+{
+  "kind": "MetricValueList",
+  "apiVersion": "custom.metrics.k8s.io/v1beta1",
+  "metadata": {
+    "selfLink": "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/%2A/value_gauge"
+  },
+  "items": [
+    {
+      "describedObject": {
+        "kind": "Pod",
+        "namespace": "default",
+        "name": "prometheus-metric-tester-5cd8bcbcfb-xv7mf",
+        "apiVersion": "/v1"
+      },
+      "metricName": "value_gauge",
+      "timestamp": "2021-05-09T01:23:22Z",
+      "value": "5",
+      "selector": null
+    }
+  ]
+}
+```
+
+
+And now let's apply the HPA with our custom metrics
+
+```console
+$ kubectl apply -f hpa_custom_metrics.yaml
+horizontalpodautoscaler.autoscaling/hpa-custom-metrics created
+```
+
+To see if it's working, take a look of the HPA
+
+```console
+$ kubectl describe hpa hpa-custom-metrics
+```
 
 
 
