@@ -316,8 +316,78 @@ To see if it's working, take a look of the HPA
 
 ```console
 $ kubectl describe hpa hpa-custom-metrics
+Name:                     hpa-custom-metrics
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+CreationTimestamp:        Sun, 09 May 2021 01:59:29 +0000
+Reference:                Deployment/prometheus-metric-tester
+Metrics:                  ( current / target )
+  "value_gauge" on pods:  5 / 5
+Min replicas:             1
+Max replicas:             5
+Deployment pods:          1 current / 1 desired
+Conditions:
+  Type            Status  Reason              Message
+  ----            ------  ------              -------
+  AbleToScale     True    ReadyForNewScale    recommended size matches current size
+  ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from pods metric value_gauge
+  ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+Events:           <none>
 ```
 
+Now increase the custom metric (new value 25)
+
+```console
+$ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
+    curl \
+    -s \
+    -X POST \
+    -H "Content-Type: application/json" \
+    --data '{"value":"25"}' \
+    prometheus-metric-tester-service:8102/metric-test/api/v2/updateValue
+```
+
+And describe the HPA again
+
+```console
+$ kubectl describe hpa hpa-custom-metrics
+Name:                     hpa-custom-metrics
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+CreationTimestamp:        Sun, 09 May 2021 01:59:29 +0000
+Reference:                Deployment/prometheus-metric-tester
+Metrics:                  ( current / target )
+  "value_gauge" on pods:  25 / 5
+Min replicas:             1
+Max replicas:             5
+Deployment pods:          5 current / 5 desired
+Conditions:
+  Type            Status  Reason              Message
+  ----            ------  ------              -------
+  AbleToScale     True    ReadyForNewScale    recommended size matches current size
+  ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from pods metric value_gauge
+  ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+Events:
+  Type    Reason             Age   From                       Message
+  ----    ------             ----  ----                       -------
+  Normal  SuccessfulRescale  50s   horizontal-pod-autoscaler  New size: 4; reason: pods metric value_gauge above target
+  Normal  SuccessfulRescale  35s   horizontal-pod-autoscaler  New size: 5; reason: pods metric value_gauge above target
+```
+
+The prometheus-metric-tester pods should have been scaled to 5
+
+
+```console
+$ kubectl get pods 
+NAME                                        READY   STATUS    RESTARTS   AGE
+prometheus-metric-tester-5cd8bcbcfb-5rr7x   1/1     Running   0          2m9s
+prometheus-metric-tester-5cd8bcbcfb-qsnlx   1/1     Running   0          2m24s
+prometheus-metric-tester-5cd8bcbcfb-vv82c   1/1     Running   0          2m24s
+prometheus-metric-tester-5cd8bcbcfb-wcgnc   1/1     Running   0          2m24s
+prometheus-metric-tester-5cd8bcbcfb-xv7mf   1/1     Running   0          121m
+```
 
 
 ## Clean up
@@ -331,8 +401,12 @@ service "php-apache" deleted
 horizontalpodautoscaler.autoscaling "test-hpa" deleted
 ```
 
-If you want to clean-up also the monitoring framework installed during lab [24-Monitoring](../24-Monitoring/README.md):
+If you want to clean-up also the monitoring framework installed during lab [24-Monitoring](../24-Monitoring/README.md) as well as the Prometheus adapter:
 
 ```console
 $ helm uninstall prometheus -n monitoring
+```
+
+```console
+$ helm uninstall prometheus-adapter -n monitoring
 ```
