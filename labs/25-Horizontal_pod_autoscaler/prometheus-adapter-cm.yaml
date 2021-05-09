@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-adapter
+  namespace: monitoring
+  labels:
+    app: prometheus-adapter
+data:
+  config.yaml: |
+    rules:
+    - seriesQuery: value_gauge
+      name:
+        matches: ^(.*)
+        as: "metric_tester_custom_metric_avg"
+      metricsQuery: 'sum(value_gauge{}) / count(value_gauge)'

@@ -8,6 +8,8 @@ Before using **kubectl**, please set the **KUBECONFIG** environment variable to 
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
+Other than `kubectl`, you need `helm` installed on your computer in order to deploy the Prometheus Adapter, download here: https://helm.sh/docs/intro/install/
+
 To run the second part of this lab you must have deployed the monitoring framework as described in lab [24-Monitoring](../24-Monitoring/README.md)
 
 ## The HPA
@@ -163,7 +165,7 @@ First of all, let's deploy a testing application that exposes Prometheus metrics
 ```console
 $ kubectl apply -f test_app.yaml
 deployment.apps/prometheus-metric-tester created
-service/prometheus-metric-tester created
+service/prometheus-metric-tester-service created
 ```
 
 This application is made for testing Prometheus metrics; it exposes a special metric named `value_gauge` whose value can bhe set using a REST API.
@@ -174,7 +176,7 @@ To test scraping the metric's initial value:
 $ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
   curl \
   -s \
-  http://prometheus-metric-tester:8102/metric-test/actuator/prometheus/ | egrep ^value_gauge
+  http://prometheus-metric-tester-service:8102/metric-test/actuator/prometheus/ | egrep ^value_gauge
 value_gauge{application="micrometer-testing",} 0.0
 ```
 
@@ -187,7 +189,8 @@ $ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
     -X POST \
     -H "Content-Type: application/json" \
     --data '{"value":"5"}' \
-    prometheus-metric-tester:8102/metric-test/api/v2/updateValue
+    prometheus-metric-tester-service:8102/metric-test/api/v2/updateValue
+pod "client" deleted
 ```
 
 To verify the new value exposed by the metric:
@@ -196,7 +199,7 @@ To verify the new value exposed by the metric:
 $ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
   curl \
   -s \
-  http://prometheus-metric-tester:8102/metric-test/actuator/prometheus/ | egrep ^value_gauge
+  http://prometheus-metric-tester-service:8102/metric-test/actuator/prometheus/ | egrep ^value_gauge
 value_gauge{application="micrometer-testing",} 5.0
 ```
 
@@ -221,8 +224,51 @@ To be able to use this metric to scale the application, the Prometheus adapter m
 
 ```
 $ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+"prometheus-community" has been added to your repositories
+```
+
+Update Helm repo index
 
 ```
+$ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "prometheus-community" chart repository
+Update Complete. ⎈Happy Helming!⎈
+```
+
+Install the adapter
+
+```
+$ helm install prometheus-adapter prometheus-community/prometheus-adapter --values prometheus-adapter-values.yaml -n monitoring
+NAME: prometheus-adapter
+LAST DEPLOYED: Sun May  9 00:18:01 2021
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+prometheus-adapter has been deployed.
+In a few minutes you should be able to list metrics using the following command(s):
+
+  kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1
+```
+
+After a couple of minutes, you can check if the adapter is running by executing:
+
+```console
+$ kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1
+{"kind":"APIResourceList","apiVersion":"v1","groupVersion":"custom.metrics.k8s.io/v1beta1","resources":[]}
+```
+
+Apply the Prometheus Adapter config map
+
+```console
+$ kubectl apply -f prometheus-adapter-cm.yaml
+configmap/prometheus-adapter configured
+```
+
+
+
 
 ## Clean up
 

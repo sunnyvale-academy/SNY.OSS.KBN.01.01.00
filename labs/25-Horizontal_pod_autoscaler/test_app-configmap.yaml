@@ -5,11 +5,11 @@ metadata:
 data:
   hazelcast.yaml: |
     hazelcast:
+      cluster-name: hazelcast-cluster
       network:
         join:
-          multicast:
-            enabled: fase
           kubernetes:
             enabled: true
             namespace: default
-            service-name: prometheus-metric-tester-hazelcast-service
+            service-name: prometheus-metric-tester-service
+            service-port: 5701

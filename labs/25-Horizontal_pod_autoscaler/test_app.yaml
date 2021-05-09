@@ -60,6 +60,7 @@ spec:
           name: test-app-cm
         ports:
         - containerPort: 8102
+        - containerPort: 5701
         readinessProbe:
           httpGet:
             scheme: HTTP
@@ -83,22 +84,12 @@ metadata:
     app: prometheus-metric-tester-service
 spec:
   ports:
-    - port: 8102
-      name: http
+    - name: http
+      port: 8102
       targetPort: 8102
-  selector:
-    app: prometheus-metric-tester
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: prometheus-metric-tester-hazelcast-service
-  labels:
-    app: prometheus-metric-tester-hazelcast-service
-spec:
-  ports:
     - name: hazelcast
       port: 5701
       targetPort: 5701
   selector:
     app: prometheus-metric-tester
+

@@ -17,4 +17,4 @@ spec:
     - default
   selector:
     matchLabels:
-      app: prometheus-metric-tester
+      app: prometheus-metric-tester-service
