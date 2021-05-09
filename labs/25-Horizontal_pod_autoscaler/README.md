@@ -138,7 +138,7 @@ php-apache   Deployment/php-apache/scale   0% / 50%     1         10        1   
 
 then
 
-```
+```console
 $ kubectl get deployment php-apache
 NAME         READY   UP-TO-DATE   AVAILABLE   AGE
 php-apache   1/1     1            1           27m
@@ -172,7 +172,7 @@ This application is made for testing Prometheus metrics; it exposes a special me
 
 To test scraping the metric's initial value:
 
-```
+```console
 $ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
   curl \
   -s \
@@ -182,7 +182,7 @@ value_gauge{application="micrometer-testing",} 0.0
 
 To set a custom value:
 
-```
+```console
 $ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
     curl \
     -s \
@@ -195,7 +195,7 @@ pod "client" deleted
 
 To verify the new value exposed by the metric:
 
-```
+```console
 $ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
   curl \
   -s \
@@ -212,7 +212,7 @@ servicemonitor.monitoring.coreos.com/prometheus-metric-tester-servicemonitor cre
 
 Open a port-forward to see if Prometheus discovered the new target a started scraping metrics from it:
 
-```
+```console
 $ kubectl port-forward svc/prometheus-kube-prometheus-prometheus --address 0.0.0.0 -n monitoring 9090:9090
 ```
 
@@ -222,14 +222,14 @@ Now verify that Prometheus started scraping the new target and the new value (5.
 
 To be able to use this metric to scale the application, the Prometheus adapter must be installed:
 
-```
+```console
 $ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 "prometheus-community" has been added to your repositories
 ```
 
 Update Helm repo index
 
-```
+```console
 $ helm repo update
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "prometheus-community" chart repository
@@ -238,7 +238,7 @@ Update Complete. ⎈Happy Helming!⎈
 
 Install the adapter
 
-```
+```console
 $ helm install prometheus-adapter prometheus-community/prometheus-adapter --values prometheus-adapter-values.yaml -n monitoring
 NAME: prometheus-adapter
 LAST DEPLOYED: Sun May  9 00:18:01 2021
