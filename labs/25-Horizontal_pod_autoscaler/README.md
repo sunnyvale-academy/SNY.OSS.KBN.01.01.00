@@ -376,7 +376,8 @@ Events:
   Normal  SuccessfulRescale  35s   horizontal-pod-autoscaler  New size: 5; reason: pods metric value_gauge above target
 ```
 
-The prometheus-metric-tester pods should have been scaled to 5
+The prometheus-metric-tester pods should have been scaled to 5 (which is the **Max replicas** parameter).
+
 
 
 ```console
@@ -388,6 +389,53 @@ prometheus-metric-tester-5cd8bcbcfb-vv82c   1/1     Running   0          2m24s
 prometheus-metric-tester-5cd8bcbcfb-wcgnc   1/1     Running   0          2m24s
 prometheus-metric-tester-5cd8bcbcfb-xv7mf   1/1     Running   0          121m
 ```
+
+What if we low down the custom metric again?
+
+```console
+$ kubectl run -i --rm --tty client --image=curlimages/curl --restart=Never -- \
+    curl \
+    -s \
+    -X POST \
+    -H "Content-Type: application/json" \
+    --data '{"value":"-10"}' \
+    prometheus-metric-tester-service:8102/metric-test/api/v2/updateValue
+```
+
+Inspecting the HPA we should see:
+
+```console
+$ kubectl describe hpa Name:                     hpa-custom-metrics
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+CreationTimestamp:        Sun, 09 May 2021 01:59:29 +0000
+Reference:                Deployment/prometheus-metric-tester
+Metrics:                  ( current / target )
+  "value_gauge" on pods:  1 / 5
+Min replicas:             1
+Max replicas:             5
+Deployment pods:          1 current / 1 desired
+Conditions:
+  Type            Status  Reason              Message
+  ----            ------  ------              -------
+  AbleToScale     True    ReadyForNewScale    recommended size matches current size
+  ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from pods metric value_gauge
+  ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+Events:
+  Type    Reason             Age   From                       Message
+  ----    ------             ----  ----                       -------
+  Normal  SuccessfulRescale  79s   horizontal-pod-autoscaler  New size: 1; reason: All metrics below target
+```
+
+And so the number of Deployment's replicas shrinked
+
+```console
+$ kubectl get pods
+NAME                                        READY   STATUS    RESTARTS   AGE
+prometheus-metric-tester-5cd8bcbcfb-xv7mf   1/1     Running   0          31h
+```
+
 
 
 ## Clean up
