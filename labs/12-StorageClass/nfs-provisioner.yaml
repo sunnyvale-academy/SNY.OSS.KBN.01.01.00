@@ -24,10 +24,13 @@ metadata:
   name: nfs-provisioner
 ---
 kind: Deployment
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 metadata:
   name: nfs-provisioner
 spec:
+  selector:
+    matchLabels:
+      app: nfs-provisioner
   replicas: 1
   strategy:
     type: Recreate
