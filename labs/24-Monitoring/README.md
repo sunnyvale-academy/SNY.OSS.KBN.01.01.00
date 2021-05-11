@@ -19,7 +19,6 @@ Other than `kubectl`, you need `helm` installed on your computer in order to dep
 - Prometheus
 - Alertmanager
 - Prometheus node-exporter
-- Prometheus Adapter
 - kube-state-metrics
 - Grafana
 
