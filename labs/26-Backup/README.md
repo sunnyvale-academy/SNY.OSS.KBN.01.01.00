@@ -201,6 +201,44 @@ $ velero restore create --from-backup $(velero backup get | tail -1 | cut -d ' '
 restore.velero.io/manifests-20210511230600-20210511233019 created
 ```
 
+```console
+$ kubectl describe restore manifests-20210511230600-20210511233019 -n velero
+Name:         manifests-20210511230600-20210511233019
+Namespace:    velero
+Labels:       <none>
+Annotations:  <none>
+API Version:  velero.io/v1
+Kind:         Restore
+Metadata:
+  Creation Timestamp:  2021-05-11T23:30:19Z
+  Generation:          23
+  Resource Version:    649838
+  Self Link:           /apis/velero.io/v1/namespaces/velero/restores/manifests-20210511230600-20210511233019
+  UID:                 ab1fb81d-8d37-441d-b901-55b6eb2dc27c
+Spec:
+  Backup Name:  manifests-20210511230600
+  Excluded Resources:
+    nodes
+    events
+    events.events.k8s.io
+    backups.velero.io
+    restores.velero.io
+    resticrepositories.velero.io
+  Hooks:
+  Included Namespaces:
+    *
+  Schedule Name:  manifests
+Status:
+  Completion Timestamp:  2021-05-11T23:30:40Z
+  Phase:                 Completed
+  Progress:
+    Items Restored:  203
+    Total Items:     203
+  Start Timestamp:   2021-05-11T23:30:19Z
+  Warnings:          19
+Events:              <none>
+```
+
 The namespace should be available again:
 
 ```console
@@ -217,8 +255,6 @@ NAME                                READY   STATUS    RESTARTS   AGE
 nginx-deployment-574b87c764-4qn8b   1/1     Running   0          66s
 nginx-deployment-574b87c764-g4l2j   1/1     Running   0          66s
 ```
-
-
 
 
 
