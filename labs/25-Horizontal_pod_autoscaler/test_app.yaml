@@ -92,4 +92,20 @@ spec:
       targetPort: 5701
   selector:
     app: prometheus-metric-tester
+---
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: test-app-cm
+data:
+  hazelcast.yaml: |
+    hazelcast:
+      cluster-name: hazelcast-cluster
+      network:
+        join:
+          kubernetes:
+            enabled: true
+            namespace: default
+            service-name: prometheus-metric-tester-service
+            service-port: 5701
 
