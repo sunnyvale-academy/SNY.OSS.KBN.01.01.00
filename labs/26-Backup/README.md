@@ -35,7 +35,7 @@ deployment.apps/nfs-provisioner created
 
 Velero places the backups it makes on an Object Storage. To simulate the presence of an Object Storage we are installing Min.io, a Kubernetes-native, performant and scalable object storage. 
 
-Normally the Object Storage used by Velero to store backups into is  external to the Kubernetes cluster; in this case we are installing an Object Storage on Kubernetes only to demonstrate the usage of Velero.
+Normally the Object Storage used by Velero to store backups is external to the Kubernetes cluster; in this case we are installing an Object Storage on Kubernetes only to demonstrate the usage of Velero.
 
 Add the Min.io Helm repo
 
