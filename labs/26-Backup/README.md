@@ -10,7 +10,9 @@ Before using **kubectl**, please set the **KUBECONFIG** environment variable to 
 $ export KUBECONFIG=../02-Multi-node_cluster/vagrant/kubeconfig.yaml
 ```
 
-Other than `kubectl`, you need `helm` installed on your computer in order to deploy the Prometheus Adapter, download here: https://helm.sh/docs/intro/install/
+Other than `kubectl`, you need `helm` installed on your computer, download here: https://helm.sh/docs/intro/install/
+
+You need to install the `velero` CLI as well, download here: https://velero.io/docs/v1.6/basic-install.
 
 ### Install a StorageClass (lab 12)
 
@@ -171,7 +173,7 @@ $ kubectl apply -n velero-test -f https://raw.githubusercontent.com/kubernetes/w
 deployment.apps/nginx-deployment created
 ```
 
-And now let's two  [backups](backups.yaml)
+And now let's create two [backups](backups.yaml)
 
 ```console
 $ kubectl apply -f backups.yaml -n velero
@@ -191,6 +193,32 @@ Now we simulate a disaster:
 $ kubectl delete ns velero-test 
 namespace "velero-test" deleted
 ```
+
+And we try a restore using the Velero CLI:
+
+```console
+$ velero restore create --from-backup $(velero backup get | tail -1 | cut -d ' ' -f 1 ) -o yaml -n velero | kubectl apply -f - 
+restore.velero.io/manifests-20210511230600-20210511233019 created
+```
+
+The namespace should be available again:
+
+```console
+$ kubectl get ns velero-test 
+NAME          STATUS   AGE
+velero-test   Active   22s
+```
+
+Pods should be running again:
+
+```console
+$ kubectl get pods -n velero-test 
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-574b87c764-4qn8b   1/1     Running   0          66s
+nginx-deployment-574b87c764-g4l2j   1/1     Running   0          66s
+```
+
+
 
 
 
