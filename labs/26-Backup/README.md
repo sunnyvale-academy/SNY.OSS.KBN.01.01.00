@@ -257,20 +257,35 @@ nginx-deployment-574b87c764-g4l2j   1/1     Running   0          66s
 ```
 
 
-
 ## Clean up
 
 Don't forget to clean up after you
 
 ```console
-$ kubectl delete -f .
-deployment.apps "php-apache" deleted
-service "php-apache" deleted
-horizontalpodautoscaler.autoscaling "test-hpa" deleted
+$ helm uninstall velero -n velero
+release "velero" uninstalled
 ```
-
-If you want to clean-up also the monitoring framework installed during lab [24-Monitoring](../24-Monitoring/README.md) as well as the Prometheus adapter:
 
 ```console
-$ helm uninstall velero -n velero
+$ helm uninstall minio -n minio
+release "minio" uninstalled
 ```
+
+```console
+$ kubectl delete ns velero-test
+namespace "velero-test" deleted
+```
+
+```console
+$ kubectl delete -f ../12-StorageClass/.
+service "nfs-provisioner" deleted
+serviceaccount "nfs-provisioner" deleted
+deployment.apps "nfs-provisioner" deleted
+storageclass.storage.k8s.io "nfs-dynamic" deleted
+persistentvolumeclaim "nfs" deleted
+clusterrole.rbac.authorization.k8s.io "nfs-provisioner-runner" deleted
+clusterrolebinding.rbac.authorization.k8s.io "run-nfs-provisioner" deleted
+role.rbac.authorization.k8s.io "leader-locking-nfs-provisioner" deleted
+rolebinding.rbac.authorization.k8s.io "leader-locking-nfs-provisioner" deleted
+```
+
