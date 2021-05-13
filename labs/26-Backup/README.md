@@ -266,8 +266,19 @@ release "velero" uninstalled
 ```
 
 ```console
+$ kubectl delete ns velero
+namespace "velero" deleted
+```
+
+
+```console
 $ helm uninstall minio -n minio
 release "minio" uninstalled
+```
+
+```console
+$ kubectl delete ns minio
+namespace "minio" deleted
 ```
 
 ```console
