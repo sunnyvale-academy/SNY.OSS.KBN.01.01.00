@@ -177,8 +177,7 @@ And now let's create two [backups](backups.yaml)
 
 ```console
 $ kubectl apply -f backups.yaml -n velero
-schedule.velero.io/full created
-schedule.velero.io/manifests created
+schedule.velero.io/backup created
 ```
 
 Both backups (full and manifests only) are scheduled once a minute.
@@ -198,25 +197,25 @@ And we try a restore using the Velero CLI:
 
 ```console
 $ velero restore create --from-backup $(velero backup get | tail -1 | cut -d ' ' -f 1 ) -o yaml -n velero | kubectl apply -f - 
-restore.velero.io/manifests-20210511230600-20210511233019 created
+restore.velero.io/backup-20210513163902-20210513173354 created
 ```
 
 ```console
-$ kubectl describe restore manifests-20210511230600-20210511233019 -n velero
-Name:         manifests-20210511230600-20210511233019
+$ kubectl describe restore.velero.io backup-20210513163902-20210513173354 -n velero
+Name:         backup-20210513163902-20210513173354
 Namespace:    velero
 Labels:       <none>
 Annotations:  <none>
 API Version:  velero.io/v1
 Kind:         Restore
 Metadata:
-  Creation Timestamp:  2021-05-11T23:30:19Z
-  Generation:          23
-  Resource Version:    649838
-  Self Link:           /apis/velero.io/v1/namespaces/velero/restores/manifests-20210511230600-20210511233019
-  UID:                 ab1fb81d-8d37-441d-b901-55b6eb2dc27c
+  Creation Timestamp:  2021-05-13T17:33:54Z
+  Generation:          22
+  Resource Version:    897308
+  Self Link:           /apis/velero.io/v1/namespaces/velero/restores/backup-20210513163902-20210513173354
+  UID:                 c9a13431-296b-4a93-ae85-0d1671af0909
 Spec:
-  Backup Name:  manifests-20210511230600
+  Backup Name:  backup-20210513163902
   Excluded Resources:
     nodes
     events
@@ -227,14 +226,14 @@ Spec:
   Hooks:
   Included Namespaces:
     *
-  Schedule Name:  manifests
+  Schedule Name:  backup
 Status:
-  Completion Timestamp:  2021-05-11T23:30:40Z
+  Completion Timestamp:  2021-05-13T17:34:15Z
   Phase:                 Completed
   Progress:
-    Items Restored:  203
-    Total Items:     203
-  Start Timestamp:   2021-05-11T23:30:19Z
+    Items Restored:  197
+    Total Items:     197
+  Start Timestamp:   2021-05-13T17:33:54Z
   Warnings:          19
 Events:              <none>
 ```
