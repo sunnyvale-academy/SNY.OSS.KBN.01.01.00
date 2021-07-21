@@ -1,0 +1,48 @@
+
+# Deny all in ns1
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ns1
+  namespace: ns1
+spec:
+  podSelector:
+    matchLabels: {}
+---
+# Deny all in ns2
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ns2
+  namespace: ns2
+spec:
+  podSelector:
+    matchLabels: {}
+--- 
+# Allow intra ns1 communication
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-ns1
+  namespace: ns1
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: ns1
+---
+# Allow intra ns2 communication
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-ns2
+  namespace: ns2
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: ns2
