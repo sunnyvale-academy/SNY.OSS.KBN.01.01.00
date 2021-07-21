@@ -101,10 +101,6 @@ Now we test the isolation:
 
 ```console
 $ kubectl run -ti --rm testing --image=busybox --restart=Never -- wget -qO- nginx-svc:80
-If you don't see a command prompt, try pressing enter.
-
-
-
 wget: can't connect to remote host (10.108.98.237): Connection timed out
 pod "testing" deleted
 pod default/testing terminated (Error)
@@ -155,9 +151,6 @@ What if we try to access Nginx from "another-pod"?
 
 ```console
 $ kubectl run -ti --rm another-pod --image=busybox --restart=Never -- wget -qO- nginx-svc:80
-
-
-
 wget: can't connect to remote host (10.108.98.237): Connection timed out
 pod "testing" deleted
 pod default/testing terminated (Error)
@@ -247,7 +240,7 @@ Commercial support is available at
 </html>
 ```
 
-By applying the policy contained into **namespace_network_isolation_policy.yaml**, each pod will be reachable exclusively from the same namespace, thus not cross-namespace communication will be allowed anymore.
+By applying the policy contained into **namespace_network_isolation_policies.yaml**, each pod will be reachable exclusively from the same namespace, thus not cross-namespace communication will be allowed anymore.
 
 ```console
 $ kubectl apply -f namespace_network_isolation_policies.yaml
