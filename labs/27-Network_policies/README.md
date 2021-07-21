@@ -289,3 +289,23 @@ Commercial support is available at
 </html>
 pod "testing" deleted
 ```
+
+## Clean up
+
+Don't forget to clean up after you
+
+```console
+$ kubectl delete -f .
+networkpolicy.networking.k8s.io "default-deny-ns1" deleted
+networkpolicy.networking.k8s.io "default-deny-ns2" deleted
+networkpolicy.networking.k8s.io "allow-ns1" deleted
+networkpolicy.networking.k8s.io "allow-ns2" deleted
+deployment.apps "nginx-deployment" deleted
+service "nginx-svc" deleted
+namespace "ns1" deleted
+deployment.apps "nginx-deployment-1" deleted
+service "nginx-svc-1" deleted
+namespace "ns2" deleted
+deployment.apps "nginx-deployment-2" deleted
+service "nginx-svc-2" deleted
+```
