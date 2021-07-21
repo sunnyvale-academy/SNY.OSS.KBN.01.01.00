@@ -15,7 +15,7 @@ The spec of the resource mainly consists of three parts:
 
 - **podSelector**: Use labels to select the group of pods for which the rules will be applied.
 - **policyTypes**: Which could be Ingress, Egress or both. This field will determine if the rules will be applied to incoming and/or outgoing traffic. If it is not defined, then Ingress will be enabled by default and Egress only when there are rules defined.
--**ingress/egress**: these sections allow a list of **from** (Ingress) or **to** (Egress) and ports blocks. Each **from/to** block contains a range of IPs (**ipBlock**) and/or a list of namespaces selected by label (**namespaceSelector**) and/or a list of pods by label (**podSelector**). That select which IPs, namespaces or pods can talk to our target pod or to which IPs, namespaces or pod our target can talk to. The ports block defines which ports are affected by this the rule.
+- **ingress/egress**: these sections allow a list of **from** (Ingress) or **to** (Egress) and ports blocks. Each **from/to** block contains a range of IPs (**ipBlock**) and/or a list of namespaces selected by label (**namespaceSelector**) and/or a list of pods by label (**podSelector**). That select which IPs, namespaces or pods can talk to our target pod or to which IPs, namespaces or pod our target can talk to. The ports block defines which ports are affected by this the rule.
 
 ## Prerequisites
 
