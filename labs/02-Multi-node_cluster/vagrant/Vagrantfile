@@ -27,7 +27,7 @@ MINIONSCRIPT
 $kubemasterscript = <<SCRIPT
 sudo swapoff -a
 kubeadm reset -f
-kubeadm init --kubernetes-version v1.16.14 --apiserver-advertise-address=#{MASTER_IP} --pod-network-cidr=#{POD_NW_CIDR} --token #{KUBETOKEN} --token-ttl 0
+kubeadm init --kubernetes-version v1.18.0 --apiserver-advertise-address=#{MASTER_IP} --pod-network-cidr=#{POD_NW_CIDR} --token #{KUBETOKEN} --token-ttl 0
 mkdir -p $HOME/.kube
 sudo cp -Rf /etc/kubernetes/admin.conf $HOME/.kube/config
 
@@ -36,6 +36,9 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 # Flannel installation
 sudo sysctl net.bridge.bridge-nf-call-iptables=1
 kubectl apply -f /vagrant/kube-flannel_kvm.yml
+
+# Intall Canal
+kubectl apply -f https://docs.projectcalico.org/manifests/canal.yaml
 
 # Share NFS
 sudo mkdir -p /storage/dynamic
