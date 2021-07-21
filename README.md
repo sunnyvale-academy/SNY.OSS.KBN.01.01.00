@@ -58,6 +58,8 @@ Welcome to the labs of the "Container orchestration with Kubernetes" learning co
 
 [26-Backup](labs/26-Backup/README.md)
 
+[27-Network policies](labs/27-Network_policies/README.md)
+
 [Google Kubernetes Engine Demo](labs/Google_Kubernetes_Engine_Demo/README.md)
 
 ## Appendices
