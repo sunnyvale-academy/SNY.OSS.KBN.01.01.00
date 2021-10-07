@@ -72,4 +72,14 @@ You need to proxy your requests to access the Dashboard
 vagrant$ kubectl proxy
 ```
 
-Point your browser [here](http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/.)
+Then point your browser to http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/.
+
+or create a public port-forward:
+
+````
+$ kubectl port-forward svc/kubernetes-dashboard --address='0.0.0.0' -n kubernetes-dashboard 9999:443
+```
+
+Then point your browser to https://\<FQ machine name\>:9999
+
+(The TLS cert must be accepted since it is not valid)
