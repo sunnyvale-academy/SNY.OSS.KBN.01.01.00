@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: single-pod
+  labels:
+    app: guestbook
+    env: dev
+spec:
+  containers:
+  - name: php-redis
+    image: gcr.io/google_samples/gb-frontend:v3
