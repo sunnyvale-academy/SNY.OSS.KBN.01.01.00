@@ -5,8 +5,7 @@ metadata:
   namespace: default
 spec:
   rules:
-  - host: 192-168-26-11.nip.io
-    http:
+  - http:
       paths:
       - path: /
         backend:
