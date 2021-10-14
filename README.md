@@ -1,4 +1,4 @@
-# Container orchestration with Kubernetes
+## Container orchestration with Kubernetes
 
 Welcome to the labs of the "Container orchestration with Kubernetes" learning course.
 
