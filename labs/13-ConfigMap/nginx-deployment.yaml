@@ -34,3 +34,8 @@ spec:
               path: virtualhost/virtualhost.conf # dig directory
       - name: log
         emptyDir: {}
+      # If the minikube DNS isn't working, uncomment the lines below.
+      #hostAliases:
+      #  - ip: 62.149.144.114
+      #    hostnames:
+      #      - "www.sunnyvale.it"
