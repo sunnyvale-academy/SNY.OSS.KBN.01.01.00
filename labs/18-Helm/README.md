@@ -65,7 +65,7 @@ Let's inspect the initial repo/s configured on Helm.
 ```console
 $ helm repo list
 NAME            URL                                             
-stable          https://kubernetes-charts.storage.googleapis.com
+Error: no repositories to show
 ```
 
 Sometimes, Charts are available on repos not known by default by Helm, so we have to add a new one:
@@ -81,7 +81,6 @@ Update the repos
 $ helm repo update
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "confluentinc" chart repository
-...Successfully got an update from the "stable" chart repository
 Update Complete.
 ```
 
