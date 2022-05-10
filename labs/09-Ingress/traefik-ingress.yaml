@@ -1,18 +1,23 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: traefik-ingress
   namespace: default
 spec:
   rules:
-  - host: 192-168-26-11.nip.io
-    http:
+  - http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: nginx-service
-          servicePort: http
+          service:
+            name: nginx-service
+            port:
+              number: 80
       - path: /whoami
+        pathType: Prefix
         backend:
-          serviceName: whoami-service
-          servicePort: http
+          service: 
+            name: whoami-service
+            port: 
+              number: 80
