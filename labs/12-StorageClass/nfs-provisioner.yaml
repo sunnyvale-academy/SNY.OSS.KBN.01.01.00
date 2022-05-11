@@ -46,7 +46,8 @@ spec:
         operator: "Exists"
         effect: "NoSchedule"
       nodeSelector:
-        "kubernetes.io/hostname": master
+              # "kubernetes.io/hostname": master
+        "kubernetes.io/hostname": ip-172-18-110-169
       containers:
         - name: nfs-provisioner
           image: quay.io/kubernetes_incubator/nfs-provisioner:v2.2.2
